@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aether Editor</title>
+<style>
+:root {
+ color-scheme:dark;
+ --bg:#090d18;
+ --panel:#151e30;
+ --line:#2b3952;
+ --blue:#3b82f6;
+ --text:#f1f5f9;
+}
+* {box-sizing:border-box}
+body {
+ margin:0;background:var(--bg);color:var(--text);
+ font-family:Arial,sans-serif;
+}
+button,input {font:inherit}
+button {
+ border:0;border-radius:10px;padding:12px;
+ background:#263550;color:white;cursor:pointer;
+}
+button:focus-visible,input:focus-visible {
+ outline:2px solid #93c5fd;outline-offset:2px;
+}
+.primary {background:var(--blue);font-weight:bold}
+header {
+ background:var(--panel);padding:15px 20px;
+ display:flex;align-items:center;justify-content:space-between;
+ border-bottom:1px solid var(--line);
+}
+.logo {color:#60a5fa;font-weight:bold;letter-spacing:1px}
+main {max-width:1100px;margin:auto;padding:20px}
+.pagina[hidden] {display:none!important}
+.hero {
+ background:linear-gradient(125deg,#182e55,#101827);
+ border:1px solid #30486d;border-radius:20px;
+ padding:28px;margin-bottom:22px;
+}
+.hero h1 {margin:0 0 10px}
+.hero p {color:#aebbd0}
+.criar {
+ padding:19px 26px;background:var(--blue);
+ font-size:16px;font-weight:bold;
+}
+.card {
+ background:var(--panel);border:1px solid var(--line);
+ border-radius:15px;padding:18px;
+}
+.projetos {
+ display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+ gap:12px;
+}
+.projeto {
+ width:100%;text-align:left;min-height:110px;
+ background:#202d45;
+}
+.projeto strong {display:block;margin:8px 0}
+.muted {color:#98a8c0;font-size:13px}
+#configuracao {max-width:650px;margin:auto}
+#nome {
+ width:100%;padding:13px;border:1px solid var(--line);
+ background:#0c1422;color:white;border-radius:9px;
+ margin:10px 0 20px;
+}
+.ratios {display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.ratio {
+ display:flex;flex-direction:column;align-items:center;
+ gap:10px;border:1px solid var(--line);
+}
+.ratio.ativo {
+ border-color:#60a5fa;background:#183d70;
+}
+.formato {
+ display:block;border:2px solid #dbeafe;border-radius:3px;
+ max-width:60px;max-height:60px;
+}
+.acoes {display:flex;gap:10px;margin-top:24px}
+.acoes button {flex:1}
+.preview {
+ background:#000;border-radius:12px;
+ margin:auto;max-height:55vh;max-width:100%;
+ display:flex;align-items:center;justify-content:center;
+ overflow:hidden;
+}
+video {width:100%;height:100%;object-fit:contain}
+.controles {display:flex;gap:10px;align-items:center;margin:16px 0}
+#progresso {flex:1;min-width:0}
+.ferramentas {
+ display:flex;gap:8px;overflow-x:auto;padding:12px 0;
+}
+.ferramentas button {white-space:nowrap;flex-shrink:0}
+.timeline {
+ background:var(--panel);border:1px solid var(--line);
+ border-radius:12px;padding:16px;min-height:130px;
+}
+.faixa {
+ background:#2358b5;border-radius:8px;padding:16px;
+ margin-top:12px;overflow:hidden;text-overflow:ellipsis;
+ white-space:nowrap;
+}
+.status {color:#a3b3ca;font-size:13px}
+footer {text-align:center;color:#70829f;padding:20px}
+@media(max-width:500px) {
+ main {padding:12px}
+ .hero {padding:18px}
+ .ratios {grid-template-columns:repeat(2,1fr)}
+ header {padding:12px}
+ .controles {gap:7px}
+}
+/* AETHER_TIMELINE_V3 */
+#editor {max-width:none}
+body:has(#editor:not([hidden])) main {
+ max-width:none;padding:8px;
+}
+.ae-workspace {
+ background:#11131b;border:1px solid #303443;
+ border-radius:12px;overflow:hidden;
+}
+.ae-top {
+ display:grid;grid-template-columns:54px minmax(0,1fr) 165px;
+ gap:8px;padding:8px;min-height:230px;
+}
+.ae-side {
+ display:flex;flex-direction:column;gap:7px;
+}
+.ae-side button {padding:10px 5px}
+.ae-view {
+ display:flex;flex-direction:column;min-width:0;
+}
+.ae-view .preview {
+ background:#000;min-height:180px;
+ max-height:48vh;width:100%;
+}
+.ae-wheel {
+ display:grid;grid-template-columns:1fr 1fr;
+ gap:6px;align-content:center;
+}
+.ae-wheel button {
+ background:#252a3a;border-radius:16px;
+ padding:13px 4px;font-size:12px;
+}
+.ae-wheel .main-action {
+ background:#e2449b;grid-column:span 2;
+ border-radius:40px;
+}
+.ae-controls {
+ display:flex;align-items:center;gap:10px;
+ padding:9px;border-top:1px solid #303443;
+}
+.ae-controls input {flex:1;min-width:0}
+.ae-scroll {
+ overflow-x:auto;background:#191b25;
+ border-top:1px solid #303443;
+ padding:14px 8px 20px;
+}
+.ae-timeline {
+ position:relative;width:1100px;min-height:195px;
+ padding-left:100px;
+ background:repeating-linear-gradient(
+  90deg,transparent 0,transparent 99px,
+  #303442 100px);
+}
+.ae-ruler {
+ height:27px;color:#abb5ca;
+ font-size:11px;display:flex;
+ gap:64px;padding-left:5px;
+}
+.ae-track {
+ display:flex;align-items:center;
+ min-height:43px;margin:5px 0;
+ border-radius:5px;
+ background:#242837;
+}
+.ae-track-label {
+ position:sticky;left:-100px;z-index:2;
+ width:96px;min-width:96px;
+ padding:10px 5px;background:#303548;
+ font-size:12px;
+}
+.ae-clip {
+ background:linear-gradient(90deg,#315493,#497cc0);
+ border:1px solid #90bfff;
+ padding:11px;border-radius:5px;
+ overflow:hidden;white-space:nowrap;
+ text-overflow:ellipsis;
+ width:310px;flex-shrink:0;
+ font-size:12px;
+}
+.ae-empty {
+ color:#8794ae;font-size:12px;padding:10px;
+}
+.ae-text {background:#90722c;color:white}
+.ae-audio {background:#157b7a;color:white}
+.ae-playhead {
+ position:absolute;top:0;bottom:0;
+ left:100px;width:2px;background:#ff555f;
+ pointer-events:none;z-index:3;
+}
+.ae-playhead:before {
+ content:"";position:absolute;top:0;left:-5px;
+ border-left:6px solid transparent;
+ border-right:6px solid transparent;
+ border-top:9px solid #ff555f;
+}
+.ae-status {
+ padding:8px 12px;color:#aab6cb;
+ font-size:12px;
+}
+@media(max-width:650px) {
+ .ae-top {
+  grid-template-columns:38px minmax(0,1fr) 85px;
+  gap:4px;min-height:180px;padding:4px;
+ }
+ .ae-side button {padding:8px 2px;font-size:11px}
+ .ae-wheel button {padding:8px 2px;font-size:10px}
+ .ae-view .preview {min-height:120px}
+ .ae-controls {gap:5px;font-size:11px}
+}
+/* AETHER_TIMELINE_V4 */
+
+.ae-side button {
+    min-height:38px;
+    background:#252d40;
+    border:1px solid #394762;
+}
+
+.ae-wheel {
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+}
+
+.ae-wheel button {
+    background:#29344b;
+    border:1px solid #3d4d6b;
+    color:#fff;
+    border-radius:12px;
+    min-height:48px;
+}
+
+.ae-wheel button:hover,
+.ae-side button:hover {
+    background:#365b96;
+}
+
+.ae-wheel .main-action {
+    background:#be3688;
+    border-radius:30px;
+}
+
+.ae-v4-panel {
+    background:#202a3d;
+    padding:12px;
+    border-top:1px solid #39455d;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.ae-v4-panel[hidden] {
+    display:none;
+}
+
+.ae-v4-panel button {
+    background:#31415f;
+}
+
+.ae-v4-panel input {
+    background:#101827;
+    color:white;
+    border:1px solid #52617c;
+    border-radius:8px;
+    padding:10px;
+}
+
+.ae-v4-selected {
+    outline:2px solid white;
+    outline-offset:2px;
+}
+
+.ae-v4-segment {
+    display:inline-flex;
+    align-items:center;
+    min-width:65px;
+    max-width:250px;
+    padding:10px;
+    background:#2563eb;
+    border:1px solid #93c5fd;
+    border-radius:6px;
+    color:white;
+    cursor:pointer;
+    font-size:12px;
+    flex-shrink:0;
+}
+
+.ae-v4-text {
+    background:#8b691f;
+}
+
+.ae-v4-audio {
+    background:#147d78;
+}
+
+@media(max-width:650px) {
+    .ae-side button {
+        min-height:30px;
+        padding:5px 2px;
+    }
+
+    .ae-wheel button {
+        min-height:38px;
+        font-size:10px;
+    }
+}
+</style>
+<script>
+/* AETHER_DIAGNOSTICO_V42 */
+(function() {
+    const erros = [];
+
+    function registrar(mensagem) {
+        erros.push(mensagem);
+        const painel = document.getElementById("aeDiagnostico");
+
+        if (painel) {
+            painel.textContent = erros.slice(-5).join("\n");
+            painel.style.display = "block";
+        }
+    }
+
+    window.addEventListener("error", function(e) {
+        registrar("ERRO JS: " + e.message +
+            " | Linha: " + e.lineno);
+    });
+
+    window.addEventListener("unhandledrejection", function(e) {
+        registrar("PROMISE: " + String(e.reason));
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const painel = document.createElement("pre");
+        painel.id = "aeDiagnostico";
+        painel.style.cssText =
+            "position:fixed;bottom:0;left:0;right:0;" +
+            "max-height:130px;overflow:auto;z-index:99999;" +
+            "background:#4a1020;color:white;padding:10px;" +
+            "font:12px monospace;white-space:pre-wrap;" +
+            "pointer-events:none;display:none";
+
+        document.body.appendChild(painel);
+
+        document.addEventListener("click", function(e) {
+            const botao = e.target.closest("button");
+
+            if (!botao) return;
+
+            const nome = botao.textContent.trim();
+
+            if (painel.style.display === "none") {
+                painel.style.display = "block";
+            }
+
+            painel.textContent =
+                "CLIQUE DETECTADO: " + nome +
+                "\nERROS: " + erros.length +
+                (erros.length ? "\n" + erros.slice(-3).join("\n") : "");
+        }, true);
+    });
+})();
+</script>
+<style>
+/* AETHER_X_INDIVIDUAL_V11_ESTILO */
+#aetherExcluirProjeto {
+    display: none !important;
+}
+#ae-projeto-excluir-geral {
+    display: none !important;
+}
+</style>
+<style>
+/* AETHER_X_VISUAL_V12 */
+
+#projetos .ae-projeto-com-x {
+    position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box;
+}
+
+#projetos .ae-projeto-com-x > .projeto {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding-right: 44px !important;
+}
+
+#projetos .ae-projeto-com-x > button:not(.projeto) {
+    position: absolute !important;
+    top: 9px !important;
+    right: 9px !important;
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    min-height: 26px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: #842439 !important;
+    border: 1px solid #bb475e !important;
+    border-radius: 7px !important;
+    color: #ffffff !important;
+    font: 16px Arial, sans-serif !important;
+    line-height: 1 !important;
+    box-shadow: none !important;
+    cursor: pointer !important;
+    z-index: 5 !important;
+    transition: background .15s ease !important;
+}
+
+#projetos .ae-projeto-com-x > button:not(.projeto):hover {
+    background: #e0344e !important;
+}
+
+#projetos .ae-projeto-com-x > button:not(.projeto):focus-visible {
+    outline: 2px solid white !important;
+    outline-offset: 2px !important;
+}
+</style>
+</head>
+<body>
+<header>
+ <span class="logo">AETHER EDITOR</span>
+ <button id="voltar" hidden>Início</button>
+</header>
+
+<main>
+ <section id="inicio" class="pagina">
+  <div class="hero">
+   <h1>Crie seu próximo vídeo</h1>
+   <p>Editor de vídeos da Aether Mindware.</p>
+   <button class="criar" id="novo">+ Criar novo projeto</button>
+  </div>
+  <h2>Meus projetos</h2>
+  <div id="projetos" class="projetos"></div>
+ </section>
+
+ <section id="configuracao" class="pagina" hidden>
+  <div class="card">
+   <h2>Novo projeto</h2>
+   <label for="nome">Nome do projeto</label>
+   <input id="nome" maxlength="80" placeholder="Meu vídeo">
+   <h3>Proporção da tela</h3>
+   <div class="ratios">
+    <button class="ratio ativo" data-ratio="16:9">
+     <span class="formato" style="width:56px;height:32px"></span>16:9
+    </button>
+    <button class="ratio" data-ratio="9:16">
+     <span class="formato" style="width:32px;height:56px"></span>9:16
+    </button>
+    <button class="ratio" data-ratio="1:1">
+     <span class="formato" style="width:44px;height:44px"></span>1:1
+    </button>
+    <button class="ratio" data-ratio="4:3">
+     <span class="formato" style="width:52px;height:39px"></span>4:3
+    </button>
+   </div>
+   <div class="acoes">
+    <button id="cancelar">Cancelar</button>
+    <button class="primary" id="criar">Criar projeto</button>
+   </div>
+  </div>
+ </section>
+
+ <section id="editor" class="pagina" hidden>
+ <div class="ae-workspace">
+  <div class="ae-top">
+   <div class="ae-side">
+    <button data-ferramenta="Desfazer">↶</button>
+    <button data-ferramenta="Refazer">↷</button>
+    <button data-ferramenta="Configurações">⚙</button>
+    <button data-ferramenta="Dividir">✂</button>
+   </div>
+
+   <div class="ae-view">
+    <div class="preview" id="preview" style="aspect-ratio:16/9">
+     <video id="video" playsinline></video>
+    </div>
+   </div>
+
+   <div class="ae-wheel">
+    <button id="importarBtn">📁 Mídia</button>
+    <button data-ferramenta="Camadas">▤ Camada</button>
+    <button class="main-action" data-ferramenta="Ferramentas">✦</button>
+    <button data-ferramenta="Áudio">♫ Áudio</button>
+    <button data-ferramenta="Gravação">🎙 Voz</button>
+    <input type="file" id="arquivo" accept="video/*" hidden>
+   </div>
+  </div>
+
+  <div class="ae-controls">
+   <button id="play">▶</button>
+   <input id="progresso" type="range" min="0" max="100" value="0">
+   <span id="tempo" class="muted">00:00</span>
+   <button id="exportar" class="primary">Exportar</button>
+  </div>
+
+  <div class="ae-scroll" id="timelineScroll">
+   <div class="ae-timeline">
+    <div class="ae-ruler">
+     <span>00:00</span><span>00:10</span>
+     <span>00:20</span><span>00:30</span>
+     <span>00:40</span><span>00:50</span>
+    </div>
+    <div class="ae-playhead" id="playhead"></div>
+    <div class="ae-track">
+     <span class="ae-track-label">🎬 Vídeo</span>
+     <div id="faixa" class="ae-clip">Nenhum vídeo</div>
+    </div>
+    <div class="ae-track">
+     <span class="ae-track-label">T Texto</span>
+     <span class="ae-empty">Camada de textos</span>
+    </div>
+    <div class="ae-track">
+     <span class="ae-track-label">♫ Áudio</span>
+     <span class="ae-empty">Camada musical</span>
+    </div>
+    <div class="ae-track">
+     <span class="ae-track-label">▤ Camadas</span>
+     <span class="ae-empty">Vídeos e imagens sobrepostos</span>
+    </div>
+   </div>
+  </div>
+  <div class="ae-v4-panel" id="aeV4Panel" hidden></div>
+
+<input id="aeV4AudioInput"
+       type="file"
+       accept="audio/*"
+       hidden>
+
+<input id="aeV4LayerInput"
+       type="file"
+       accept="image/*,video/*"
+       hidden>
+<p class="ae-status" id="status">
+   Importe um vídeo para começar.
+  </p>
+ </div>
+ <h3 id="tituloProjeto" class="muted">Projeto</h3>
+</section>
+</main>
+<footer>Aether Mindware • Aether Editor V2</footer>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const CHAVE = "aether_editor_projetos_v2";
+let projetos = [];
+let projetoAtual = null;
+let proporcao = "16:9";
+let urlVideo = null;
+
+function carregar() {
+ try {
+  const dados = JSON.parse(localStorage.getItem(CHAVE) || "[]");
+  projetos = Array.isArray(dados) ? dados : [];
+ } catch(e) {
+  projetos = [];
+  alert("Não foi possível ler os projetos salvos.");
+ }
+}
+
+function salvar() {
+ try {
+  localStorage.setItem(CHAVE,JSON.stringify(projetos));
+  return true;
+ } catch(e) {
+  alert("Falha ao salvar. Verifique o armazenamento do navegador.");
+  return false;
+ }
+}
+
+function pagina(id) {
+ document.querySelectorAll(".pagina").forEach(el => el.hidden=true);
+ $(id).hidden=false;
+ $("voltar").hidden=(id==="inicio");
+}
+
+function limparVideo() {
+ $("video").pause();
+ $("video").removeAttribute("src");
+ $("video").load();
+ if(urlVideo) URL.revokeObjectURL(urlVideo);
+ urlVideo=null;
+ $("arquivo").value="";
+ $("faixa").textContent="Nenhum vídeo importado";
+ $("progresso").value=0;
+ $("tempo").textContent="00:00";
+ $("play").textContent="▶";
+}
+
+function mostrarInicio() {
+ limparVideo();
+ projetoAtual=null;
+ listarProjetos();
+ pagina("inicio");
+}
+
+function listarProjetos() {
+ const area=$("projetos");
+ area.replaceChildren();
+
+ if(!projetos.length) {
+  const aviso=document.createElement("p");
+  aviso.className="muted";
+  aviso.textContent="Nenhum projeto criado ainda.";
+  area.appendChild(aviso);
+  return;
+ }
+
+ projetos.slice().reverse().forEach(p => {
+  const b=document.createElement("button");
+  b.className="projeto";
+
+  const icone=document.createElement("span");
+  icone.textContent="🎬 " + p.ratio;
+
+  const titulo=document.createElement("strong");
+  titulo.textContent=p.nome;
+
+  const data=document.createElement("span");
+  data.className="muted";
+  data.textContent="Abrir projeto";
+
+  b.append(icone,titulo,data);
+  /* AETHER_X_INDIVIDUAL_V11 */
+
+  b.addEventListener("click",()=>abrirProjeto(p.id));
+
+  const cartao = document.createElement("div");
+  cartao.className = "ae-projeto-com-x";
+  cartao.style.cssText =
+    "position:relative;min-width:0;display:flex;";
+
+  b.style.width = "100%";
+  b.style.height = "100%";
+  b.style.paddingRight = "52px";
+
+  const excluir = document.createElement("button");
+  excluir.type = "button";
+  excluir.textContent = "✕";
+  excluir.title = "Excluir " + p.nome;
+  excluir.setAttribute(
+    "aria-label",
+    "Excluir projeto " + p.nome
+  );
+
+  excluir.style.cssText = [
+    "position:absolute",
+    "top:10px",
+    "right:10px",
+    "width:32px",
+    "height:32px",
+    "border-radius:8px",
+    "border:1px solid #dc5365",
+    "background:#a51e36",
+    "color:white",
+    "font-size:18px",
+    "cursor:pointer",
+    "z-index:2"
+  ].join(";");
+
+  excluir.addEventListener("click", function(evento) {
+    evento.preventDefault();
+    evento.stopPropagation();
+
+    const indice = projetos.findIndex(
+      item => item.id === p.id
+    );
+
+    if (indice < 0) {
+      alert("Projeto nao encontrado.");
+      return;
+    }
+
+    const confirmar = confirm(
+      'Excluir o projeto "' + p.nome + '"?\n\n' +
+      "Os arquivos originais nao serao apagados."
+    );
+
+    if (!confirmar) return;
+
+    if (typeof salvar !== "function") {
+      alert("Funcao de salvar indisponivel.");
+      return;
+    }
+
+    const removido = projetos.splice(indice, 1)[0];
+
+    try {
+      salvar();
+      listarProjetos();
+    } catch (erro) {
+      projetos.splice(indice, 0, removido);
+      alert(
+        "Nao foi possivel salvar a exclusao: " +
+        erro.message
+      );
+    }
+  });
+
+  cartao.appendChild(b);
+  cartao.appendChild(excluir);
+  area.appendChild(cartao);
+ });
+}
+
+function abrirProjeto(id) {
+ const p=projetos.find(x=>x.id===id);
+ if(!p) return;
+ limparVideo();
+ projetoAtual=p.id;
+ $("tituloProjeto").textContent=p.nome;
+ const partes=p.ratio.split(":").map(Number);
+ $("preview").style.aspectRatio=partes.join(" / ");
+ $("status").textContent="Importe um vídeo para começar a edição.";
+ pagina("editor");
+}
+
+$("novo").onclick=()=>{
+ $("nome").value="";
+ proporcao="16:9";
+ document.querySelectorAll(".ratio").forEach(b=>{
+  b.classList.toggle("ativo",b.dataset.ratio===proporcao);
+ });
+ pagina("configuracao");
+};
+
+document.querySelectorAll(".ratio").forEach(b=>{
+ b.onclick=()=>{
+  proporcao=b.dataset.ratio;
+  document.querySelectorAll(".ratio").forEach(x=>{
+   x.classList.toggle("ativo",x===b);
+  });
+ };
+});
+
+$("criar").onclick=()=>{
+ const nome=$("nome").value.trim() || "Meu projeto";
+ const id=Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,9);
+ const p={id,nome,ratio:proporcao,criado:new Date().toISOString()};
+
+ projetos.push(p);
+ if(!salvar()) {
+  projetos.pop();
+  return;
+ }
+ abrirProjeto(id);
+};
+
+$("cancelar").onclick=mostrarInicio;
+$("voltar").onclick=mostrarInicio;
+
+$("importarBtn").onclick=()=>$("arquivo").click();
+
+$("arquivo").onchange=e=>{
+ const file=e.target.files[0];
+ if(!file) return;
+ if(!file.type.startsWith("video/")) {
+  $("status").textContent="Selecione um arquivo de vídeo válido.";
+  return;
+ }
+ limparVideo();
+ urlVideo=URL.createObjectURL(file);
+ $("video").src=urlVideo;
+ $("faixa").textContent=file.name;
+ $("status").textContent="Vídeo carregado: "+file.name;
+};
+
+$("play").onclick=async()=>{
+ const v=$("video");
+ if(!v.src) return;
+ if(v.paused) {
+  try { await v.play(); }
+  catch(e) { $("status").textContent="Erro ao reproduzir vídeo."; }
+ } else {
+  v.pause();
+ }
+};
+
+$("video").onplay=()=>$("play").textContent="❚❚";
+$("video").onpause=()=>$("play").textContent="▶";
+
+function tempo(s) {
+ if(!Number.isFinite(s)) return "00:00";
+ return String(Math.floor(s/60)).padStart(2,"0")+":"+
+        String(Math.floor(s%60)).padStart(2,"0");
+}
+
+$("video").ontimeupdate=()=>{
+ const v=$("video");
+ if(Number.isFinite(v.duration)&&v.duration>0) {
+  $("progresso").value=v.currentTime/v.duration*100;
+  $("tempo").textContent=tempo(v.currentTime)+" / "+tempo(v.duration);
+ }
+};
+
+$("progresso").oninput=e=>{
+ const v=$("video");
+ if(Number.isFinite(v.duration)&&v.duration>0) {
+  v.currentTime=Number(e.target.value)/100*v.duration;
+ }
+};
+
+document.querySelectorAll("[data-ferramenta]").forEach(b=>{
+ b.onclick=()=>{
+  $("status").textContent=b.dataset.ferramenta+
+    ": ferramenta ainda em desenvolvimento.";
+ };
+});
+
+$("exportar").onclick=()=>{
+ $("status").textContent="Exportação ainda não implementada.";
+};
+
+window.addEventListener("pagehide",()=>{
+ if(urlVideo) URL.revokeObjectURL(urlVideo);
+});
+
+carregar();
+listarProjetos();
+pagina("inicio");
+/* AETHER_TIMELINE_V3_CONTROLES */
+const aePlayhead = document.getElementById("playhead");
+const aeClip = document.getElementById("faixa");
+
+document.getElementById("video").addEventListener(
+ "loadedmetadata", function() {
+  if(Number.isFinite(this.duration)) {
+   aeClip.style.width =
+    Math.min(900,Math.max(90,this.duration*10))+"px";
+  }
+ }
+);
+
+function atualizarPlayhead() {
+ const v=document.getElementById("video");
+ if(Number.isFinite(v.duration) && v.duration>0) {
+  const largura=aeClip.offsetWidth;
+  aePlayhead.style.left=
+   (100+v.currentTime/v.duration*largura)+"px";
+ }
+}
+
+document.getElementById("video").addEventListener(
+ "timeupdate",atualizarPlayhead
+);
+
+document.getElementById("progresso").addEventListener(
+ "input",atualizarPlayhead
+);
+
+document.getElementById("arquivo").addEventListener(
+ "change",function() {
+  aePlayhead.style.left="100px";
+ }
+);
+</script>
+<script>
+/* AETHER_TIMELINE_V4_CONTROLES */
+/* AETHER_FIX_V41 */
+
+(() => {
+"use strict";
+
+const $v4 = id => document.getElementById(id);
+const video = $v4("video");
+const faixa = $v4("faixa");
+const status = $v4("status");
+const painel = $v4("aeV4Panel");
+
+let segmentos = [];
+let selecionado = -1;
+let historico = [];
+let futuros = [];
+let audioURL = null;
+let audioPlayer = null;
+
+function mensagem(texto) {
+    status.textContent = texto;
+}
+
+function painelAbrir(titulo, acoes) {
+    painel.replaceChildren();
+
+    const nome = document.createElement("strong");
+    nome.textContent = titulo;
+    nome.style.width = "100%";
+    painel.appendChild(nome);
+
+    for (const [texto, funcao] of acoes) {
+        const botao = document.createElement("button");
+        botao.textContent = texto;
+        botao.onclick = funcao;
+        painel.appendChild(botao);
+    }
+
+    painel.hidden = false;
+}
+
+function registrar() {
+    historico.push(JSON.stringify(segmentos));
+    if (historico.length > 30) historico.shift();
+    futuros = [];
+}
+
+function desenhar() {
+    faixa.replaceChildren();
+
+    if (!segmentos.length) {
+        faixa.textContent = "Nenhum clipe";
+        return;
+    }
+
+    segmentos.forEach((item, indice) => {
+        const botao = document.createElement("button");
+
+        botao.className = "ae-v4-segment";
+
+        if (item.tipo === "texto") {
+            botao.classList.add("ae-v4-text");
+        }
+
+        if (item.tipo === "audio") {
+            botao.classList.add("ae-v4-audio");
+        }
+
+        if (indice === selecionado) {
+            botao.classList.add("ae-v4-selected");
+        }
+
+        botao.textContent = item.nome;
+
+        botao.onclick = () => {
+            selecionado = indice;
+            desenhar();
+
+            if (item.tipo === "video" &&
+                Number.isFinite(item.inicio)) {
+                video.currentTime = item.inicio;
+            }
+
+            mensagem("Clipe selecionado: " + item.nome);
+        };
+
+        faixa.appendChild(botao);
+    });
+}
+
+function dividir() {
+    if (!video.src || !Number.isFinite(video.duration)) {
+        mensagem("Importe um vídeo antes de dividir.");
+        return;
+    }
+
+    if (selecionado < 0 ||
+        !segmentos[selecionado] ||
+        segmentos[selecionado].tipo !== "video") {
+        mensagem("Selecione um segmento de vídeo.");
+        return;
+    }
+
+    const atual = segmentos[selecionado];
+    const ponto = video.currentTime;
+
+    if (ponto <= atual.inicio + 0.1 ||
+        ponto >= atual.fim - 0.1) {
+        mensagem("Posicione o cursor dentro do segmento.");
+        return;
+    }
+
+    registrar();
+
+    const esquerda = {
+        ...atual,
+        nome: atual.nome + " A",
+        fim: ponto
+    };
+
+    const direita = {
+        ...atual,
+        nome: atual.nome + " B",
+        inicio: ponto
+    };
+
+    segmentos.splice(selecionado, 1, esquerda, direita);
+    selecionado++;
+    desenhar();
+
+    mensagem("Segmento dividido na timeline.");
+}
+
+function excluir() {
+    if (selecionado < 0) {
+        mensagem("Selecione um clipe.");
+        return;
+    }
+
+    registrar();
+    segmentos.splice(selecionado, 1);
+    selecionado = -1;
+    desenhar();
+    mensagem("Clipe removido da timeline.");
+}
+
+function desfazer() {
+    if (!historico.length) {
+        mensagem("Nada para desfazer.");
+        return;
+    }
+
+    futuros.push(JSON.stringify(segmentos));
+    segmentos = JSON.parse(historico.pop());
+    selecionado = -1;
+    desenhar();
+    mensagem("Alteração desfeita.");
+}
+
+function refazer() {
+    if (!futuros.length) {
+        mensagem("Nada para refazer.");
+        return;
+    }
+
+    historico.push(JSON.stringify(segmentos));
+    segmentos = JSON.parse(futuros.pop());
+    selecionado = -1;
+    desenhar();
+    mensagem("Alteração refeita.");
+}
+
+function adicionarTexto() {
+    const texto = prompt("Digite o texto:");
+
+    if (!texto || !texto.trim()) return;
+
+    registrar();
+
+    segmentos.push({
+        nome: texto.trim(),
+        tipo: "texto"
+    });
+
+    desenhar();
+    mensagem("Texto adicionado à timeline.");
+}
+
+function capturar() {
+    if (!video.videoWidth) {
+        mensagem("Importe um vídeo primeiro.");
+        return;
+    }
+
+    try {
+        const canvas = document.createElement("canvas");
+        canvas.width = 320;
+        canvas.height = 180;
+
+        canvas.getContext("2d").drawImage(
+            video, 0, 0, 320, 180
+        );
+
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = "aether-quadro.png";
+        link.click();
+
+        mensagem("Quadro capturado.");
+    } catch (_) {
+        mensagem("Falha ao capturar o quadro.");
+    }
+}
+
+function adicionarAudio(evento) {
+    const arquivo = evento.target.files[0];
+    if (!arquivo) return;
+
+    if (audioURL) URL.revokeObjectURL(audioURL);
+
+    if (audioPlayer) {
+        audioPlayer.pause();
+        audioPlayer = null;
+    }
+
+    audioURL = URL.createObjectURL(arquivo);
+    audioPlayer = new Audio(audioURL);
+
+    registrar();
+
+    segmentos.push({
+        nome: arquivo.name,
+        tipo: "audio"
+    });
+
+    desenhar();
+    mensagem("Áudio importado para teste.");
+}
+
+const lateral = document.querySelector(".ae-side");
+const menu = document.querySelector(".ae-wheel");
+
+if (!lateral || !menu || !painel) {
+    console.error("Aether V4: estrutura V3 ausente.");
+    return;
+}
+
+lateral.replaceChildren();
+const entradaVideoV4 = document.getElementById("arquivo");
+
+if (!entradaVideoV4) {
+    throw new Error("Campo de importacao nao encontrado.");
+}
+
+menu.parentElement.appendChild(entradaVideoV4);
+menu.replaceChildren();
+
+function botao(destino, texto, funcao, classe) {
+    const b = document.createElement("button");
+    b.textContent = texto;
+    b.title = texto;
+    if (classe) b.className = classe;
+    b.onclick = funcao;
+    destino.appendChild(b);
+    return b;
+}
+
+botao(lateral, "↶", desfazer);
+botao(lateral, "↷", refazer);
+botao(lateral, "⚙", () => painelAbrir(
+    "Configurações",
+    [["Fechar", () => painel.hidden = true]]
+));
+botao(lateral, "✂", dividir);
+botao(lateral, "⌫", excluir);
+botao(lateral, "▣", capturar);
+
+botao(menu, "📁 Mídia", () => {
+    $v4("arquivo").click();
+});
+
+botao(menu, "▤ Camada", () => painelAbrir(
+    "Adicionar camada",
+    [
+        ["Texto", adicionarTexto],
+        ["Imagem ou vídeo", () => $v4("aeV4LayerInput").click()]
+    ]
+));
+
+botao(menu, "✦ Legendas IA", () => {
+    mensagem("Legendas automáticas ainda não integradas.");
+}, "main-action");
+
+botao(menu, "♫ Áudio", () => {
+    $v4("aeV4AudioInput").click();
+});
+
+botao(menu, "🎙 Voz", () => {
+    mensagem("Gravação de voz ainda não integrada.");
+});
+
+botao($v4("aeV4Panel"), "Fechar", () => {
+    painel.hidden = true;
+});
+
+painel.hidden = true;
+
+$v4("aeV4AudioInput").addEventListener(
+    "change", adicionarAudio
+);
+
+$v4("aeV4LayerInput").addEventListener("change", evento => {
+    const arquivo = evento.target.files[0];
+    if (!arquivo) return;
+
+    registrar();
+
+    segmentos.push({
+        nome: arquivo.name,
+        tipo: "camada"
+    });
+
+    desenhar();
+    mensagem("Camada registrada na timeline.");
+});
+
+$v4("arquivo").addEventListener("change", evento => {
+    const arquivo = evento.target.files[0];
+    if (!arquivo) return;
+
+    segmentos = [];
+    historico = [];
+    futuros = [];
+
+    const registrarVideo = () => {
+        if (!Number.isFinite(video.duration)) return;
+
+        segmentos = [{
+            nome: arquivo.name,
+            tipo: "video",
+            inicio: 0,
+            fim: video.duration
+        }];
+
+        selecionado = 0;
+        desenhar();
+    };
+
+    video.addEventListener(
+        "loadedmetadata",
+        registrarVideo,
+        {once:true}
+    );
+
+    if (video.readyState >= 1) registrarVideo();
+}, true);
+
+window.addEventListener("pagehide", () => {
+    if (audioURL) URL.revokeObjectURL(audioURL);
+});
+
+mensagem("Timeline V4 pronta para testes.");
+})();
+</script>
+<script src="aether_update_v2.js?v=20261115144121027"></script><script src="aether_auto_update_v1.js?v=20261115144121027"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261115144121027"></script>
+<script>(function(){let v=null;async function check(){try{let r=await fetch("./build.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;let d=await r.json();if(v===null)v=d.revisao;else if(v!==d.revisao)location.replace("./index.html?v="+encodeURIComponent(d.revisao));}catch(e){console.warn(e);}}check();setInterval(check,30000);})();</script>
+</body>
+</html>
+
+
