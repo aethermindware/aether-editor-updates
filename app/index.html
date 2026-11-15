@@ -854,8 +854,7 @@ function atualizarPlayhead() {
  const v=document.getElementById("video");
  if(Number.isFinite(v.duration) && v.duration>0) {
   const largura=aeClip.offsetWidth;
-  aePlayhead.style.left=
-   (100+v.currentTime/v.duration*largura)+"px";
+  if (!window.AETHER_AGULHA_V3) { aePlayhead.style.left = (100 + v.currentTime / v.duration * largura) + "px"; }
  }
 }
 
@@ -1238,9 +1237,9 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261115203047789"></script><script src="aether_auto_update_v1.js?v=20261115203047789"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261115203047789"></script>
-<script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=3"></script>
+<script src="aether_update_v2.js?v=20261115205247745"></script><script src="aether_auto_update_v1.js?v=20261115205247745"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261115205247745"></script>
+<script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script>(function(){let v=null;async function check(){try{let r=await fetch("./build.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;let d=await r.json();if(v===null)v=d.revisao;else if(v!==d.revisao)location.replace("./index.html?v="+encodeURIComponent(d.revisao));}catch(e){console.warn(e);}}check();setInterval(check,30000);})();</script>
 </body>
 </html>
