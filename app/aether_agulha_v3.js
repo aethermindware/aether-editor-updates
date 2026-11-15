@@ -112,7 +112,7 @@ function iniciar() {
 
         return {
             inicio: r.left - t.left,
-            largura: r.width
+            largura: Math.max(1, (timeline.querySelector("#faixa")?.offsetWidth || r.width))
         };
     }
 
