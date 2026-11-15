@@ -1237,8 +1237,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261115215758374"></script><script src="aether_auto_update_v1.js?v=20261115215758374"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261115215758374"></script>
+<script src="aether_update_v2.js?v=20261115220218503"></script><script src="aether_auto_update_v1.js?v=20261115220218503"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261115220218503"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -2495,6 +2495,124 @@ mensagem("Timeline V4 pronta para testes.");
         document.addEventListener("DOMContentLoaded", aplicar, { once: true });
     } else {
         aplicar();
+    }
+})();
+</script>
+<!-- AETHER_MENU_ICONES_V23 -->
+<style id="aether-menu-icones-v23">
+
+#editor .aether-pro-menu-v2 button {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    color: #eef4ff !important;
+    font-size: 11px !important;
+    line-height: 1.05 !important;
+    text-align: center !important;
+}
+
+#editor .aether-pro-menu-v2 button .ae-icon {
+    display: block !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    opacity: 0.98 !important;
+}
+
+#editor .aether-pro-menu-v2 button .ae-label {
+    display: block !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    line-height: 1.05 !important;
+    letter-spacing: 0.1px !important;
+    white-space: nowrap !important;
+}
+
+#editor .aether-pro-menu-v2 [data-aether-slot="ai"] {
+    color: white !important;
+}
+
+#editor .aether-pro-menu-v2 [data-aether-slot="ai"] .ae-icon {
+    font-size: 22px !important;
+}
+
+#editor .aether-pro-menu-v2 [data-aether-slot="ai"] .ae-label {
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.4px !important;
+}
+
+#editor .aether-pro-menu-v2 [data-aether-slot="media"] .ae-label,
+#editor .aether-pro-menu-v2 [data-aether-slot="layer"] .ae-label,
+#editor .aether-pro-menu-v2 [data-aether-slot="audio"] .ae-label,
+#editor .aether-pro-menu-v2 [data-aether-slot="voice"] .ae-label {
+    font-size: 11px !important;
+}
+
+/* ajuste fino para mobile menor */
+@media (max-width: 420px) {
+    #editor .aether-pro-menu-v2 button .ae-icon {
+        font-size: 18px !important;
+    }
+
+    #editor .aether-pro-menu-v2 button .ae-label {
+        font-size: 10px !important;
+    }
+
+    #editor .aether-pro-menu-v2 [data-aether-slot="ai"] .ae-label {
+        font-size: 16px !important;
+    }
+}
+</style>
+
+<script id="aether-menu-icones-v23-script">
+(() => {
+    "use strict";
+
+    function aplicarIcones() {
+        const root = document.getElementById("editor");
+        if (!root) return;
+
+        const menu = root.querySelector(".aether-pro-menu-v2");
+        if (!menu) return;
+
+        const icones = {
+            media:  { icon: "📁", label: "Mídia"   },
+            layer:  { icon: "▤",  label: "Camada"  },
+            ai:     { icon: "✦",  label: "I.A"     },
+            audio:  { icon: "♫",  label: "Áudio"   },
+            voice:  { icon: "🎙", label: "Voz"     }
+        };
+
+        const botoes = [...menu.querySelectorAll("button")];
+        if (!botoes.length) return;
+
+        for (const b of botoes) {
+            const slot = b.dataset.aetherSlot;
+            if (!slot || !icones[slot]) continue;
+
+            const info = icones[slot];
+            b.innerHTML =
+                '<span class="ae-icon">' + info.icon + '</span>' +
+                '<span class="ae-label">' + info.label + '</span>';
+
+            if (slot === "ai") {
+                b.title = "I.A";
+                b.setAttribute("aria-label", "I.A");
+            }
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            aplicarIcones,
+            { once: true }
+        );
+    } else {
+        aplicarIcones();
     }
 })();
 </script>
