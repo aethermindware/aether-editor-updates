@@ -1237,8 +1237,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261115220218503"></script><script src="aether_auto_update_v1.js?v=20261115220218503"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261115220218503"></script>
+<script src="aether_update_v2.js?v=20261115230037924"></script><script src="aether_auto_update_v1.js?v=20261115230037924"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261115230037924"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -2613,6 +2613,69 @@ mensagem("Timeline V4 pronta para testes.");
         );
     } else {
         aplicarIcones();
+    }
+})();
+</script>
+<!-- AETHER_OCULTAR_FERRAMENTAS_V2 -->
+<style id="aether-ocultar-ferramentas-v2">
+    #ae-extra-v1,
+    .ae-extra-toggle {
+        display: none !important;
+    }
+</style>
+
+<script id="aether-ocultar-ferramentas-v2-script">
+(() => {
+    "use strict";
+
+    function ocultar() {
+        const painel = document.getElementById("ae-extra-v1");
+
+        if (painel) {
+            painel.style.setProperty(
+                "display", "none", "important"
+            );
+        }
+
+        document.querySelectorAll(
+            "button, [role='button']"
+        ).forEach(botao => {
+            const texto = (botao.textContent || "")
+                .replace(/✂/g, "")
+                .replace(/\uFE0F/g, "")
+                .trim()
+                .toLowerCase();
+
+            if (texto === "ferramentas") {
+                botao.style.setProperty(
+                    "display", "none", "important"
+                );
+                botao.setAttribute("aria-hidden", "true");
+                botao.tabIndex = -1;
+            }
+        });
+    }
+
+    function iniciar() {
+        ocultar();
+
+        new MutationObserver(ocultar).observe(
+            document.body,
+            {
+                childList: true,
+                subtree: true
+            }
+        );
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            iniciar,
+            { once: true }
+        );
+    } else {
+        iniciar();
     }
 })();
 </script>
