@@ -1237,11 +1237,12 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261115211559663"></script><script src="aether_auto_update_v1.js?v=20261115211559663"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261115211559663"></script>
+<script src="aether_update_v2.js?v=20261115212740391"></script><script src="aether_auto_update_v1.js?v=20261115212740391"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261115212740391"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
+<script id="aether-media-apos-criar-v1" src="./aether_media_apos_criar_v1.js?v=1"></script>
 <script>(function(){let v=null;async function check(){try{let r=await fetch("./build.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;let d=await r.json();if(v===null)v=d.revisao;else if(v!==d.revisao)location.replace("./index.html?v="+encodeURIComponent(d.revisao));}catch(e){console.warn(e);}}check();setInterval(check,30000);})();</script>
 </body>
 </html>
