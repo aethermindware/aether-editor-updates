@@ -1237,12 +1237,336 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261115212740391"></script><script src="aether_auto_update_v1.js?v=20261115212740391"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261115212740391"></script>
+<script src="aether_update_v2.js?v=20261115213934011"></script><script src="aether_auto_update_v1.js?v=20261115213934011"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261115213934011"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
 <script id="aether-media-apos-criar-v1" src="./aether_media_apos_criar_v1.js?v=1"></script>
+<!-- AETHER_LAYOUT_RESPONSIVO_V1 -->
+<style id="aether-layout-v1">
+
+/* Visual geral */
+#editor, #editorPage {
+    box-sizing: border-box;
+    max-width: 1500px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#editor button:not(.ae-clip),
+#editorPage button:not(.clip) {
+    border-radius: 10px;
+    min-height: 40px;
+    transition: background-color .15s,
+                border-color .15s;
+}
+
+#editor button:focus-visible,
+#editorPage button:focus-visible {
+    outline: 2px solid #7db4ff;
+    outline-offset: 2px;
+}
+
+/* Visualizacao do video */
+#editor .preview,
+#editor #preview,
+#editorPage .preview-box {
+    box-sizing: border-box;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #000;
+}
+
+#editor #video,
+#editorPage #video {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    background: #000;
+}
+
+/* Botoes principais */
+#editor [data-act="media"],
+#editorPage [data-act="media"] {
+    background: #244d91;
+    border-color: #397ade;
+    color: #fff;
+}
+
+#editor [data-act="layer"],
+#editorPage [data-act="layer"] {
+    background: #27334a;
+}
+
+#editor [data-act="captions"],
+#editorPage [data-act="captions"] {
+    background: #b83283;
+    border-color: #cf58a1;
+}
+
+/* Controles de reproducao */
+#editor input[type="range"],
+#editorPage input[type="range"] {
+    accent-color: #4e94ff;
+}
+
+#editor .controls,
+#editorPage .controls {
+    gap: 8px;
+    align-items: center;
+}
+
+/* Timeline: preservar largura e coordenadas */
+#editor #timelineScroll,
+#editorPage #timelineScroll {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #536784 #171d2b;
+}
+
+#editor .ae-ruler {
+    color: #b9c8e0;
+    font-variant-numeric: tabular-nums;
+}
+
+#editor .ae-track {
+    border-radius: 7px;
+    border-bottom: 1px solid #334159;
+    background: #222b3d;
+}
+
+#editor .ae-track:nth-of-type(odd) {
+    background: #1c2535;
+}
+
+#editor .ae-clip {
+    border-radius: 7px;
+    border: 1px solid #6b9ee4;
+    background: #355c94;
+}
+
+#editor .ae-clip:focus-visible {
+    outline: 2px solid #ffffff;
+}
+
+/* Agulha: apenas aparencia, sem mexer na posicao */
+#editor #playhead {
+    box-shadow: 0 0 5px #ff526d88;
+}
+
+/* Organizador responsivo: ativado quando
+   as tres areas forem identificadas */
+@media (max-width: 700px) {
+
+    #editor, #editorPage {
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+
+    #editor button:not(.ae-clip),
+    #editorPage button:not(.clip) {
+        min-height: 43px;
+        padding: 7px 8px;
+        font-size: 12px;
+    }
+
+    #editor .aether-layout-stage {
+        display: grid !important;
+        grid-template-columns:
+            minmax(0, 1fr) minmax(0, 1.3fr);
+        gap: 8px !important;
+        align-items: start;
+    }
+
+    #editor .aether-layout-preview {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        width: 100%;
+        min-width: 0;
+    }
+
+    #editor .aether-layout-left {
+        grid-column: 1;
+        grid-row: 2;
+        display: flex !important;
+        flex-flow: row wrap !important;
+        align-items: flex-start;
+        align-content: flex-start;
+        gap: 5px !important;
+    }
+
+    #editor .aether-layout-left button {
+        flex: 1 1 42px;
+        min-width: 40px;
+    }
+
+    #editor .aether-layout-right {
+        grid-column: 2;
+        grid-row: 2;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px !important;
+        align-content: start;
+    }
+
+    #editor .aether-layout-right button {
+        min-width: 0;
+        width: 100%;
+        white-space: normal;
+    }
+
+    #editor .aether-layout-right
+    [data-act="captions"] {
+        grid-column: 1 / -1;
+    }
+
+    #editor .preview,
+    #editor #preview {
+        max-height: 42vh;
+    }
+
+    #editor .ae-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #editor .ae-track {
+        min-height: 44px;
+    }
+
+    #editor .ae-ruler {
+        font-size: 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #editor button,
+    #editorPage button {
+        transition: none !important;
+    }
+}
+</style>
+
+<script id="aether-layout-organizador-v1">
+(() => {
+    "use strict";
+
+    function iniciar() {
+        const root =
+            document.getElementById("editor") ||
+            document.getElementById("editorPage");
+
+        if (!root) return;
+
+        const preview = root.querySelector(
+            "#preview, #previewBox, .preview, .preview-box"
+        );
+
+        const botoes = Array.from(
+            root.querySelectorAll("button")
+        );
+
+        const media =
+            root.querySelector('[data-act="media"]') ||
+            botoes.find(b =>
+                /m[ií]dia/i.test(b.textContent || "")
+            );
+
+        const undo =
+            root.querySelector('[data-act="undo"]') ||
+            botoes.find(b =>
+                /desfazer|undo/i.test(
+                    (b.title || "") + " " +
+                    (b.textContent || "")
+                ) ||
+                (b.textContent || "").includes("↶")
+            );
+
+        if (!preview || !media || !undo) return;
+
+        for (
+            let stage = preview.parentElement;
+            stage && stage !== root;
+            stage = stage.parentElement
+        ) {
+            if (
+                !stage.contains(media) ||
+                !stage.contains(undo)
+            ) continue;
+
+            // Nunca reorganizar a timeline.
+            if (
+                stage.querySelector(
+                    "#timelineScroll, .ae-scroll"
+                )
+            ) return;
+
+            const filhos = Array.from(stage.children);
+
+            const direto = elemento =>
+                filhos.find(f =>
+                    f === elemento || f.contains(elemento)
+                );
+
+            const areaVideo = direto(preview);
+            const areaMedia = direto(media);
+            const areaFerramentas = direto(undo);
+
+            if (
+                !areaVideo ||
+                !areaMedia ||
+                !areaFerramentas ||
+                new Set([
+                    areaVideo,
+                    areaMedia,
+                    areaFerramentas
+                ]).size !== 3
+            ) return;
+
+            stage.classList.add(
+                "aether-layout-stage"
+            );
+
+            areaVideo.classList.add(
+                "aether-layout-preview"
+            );
+
+            areaMedia.classList.add(
+                "aether-layout-right"
+            );
+
+            areaFerramentas.classList.add(
+                "aether-layout-left"
+            );
+
+            console.log(
+                "AETHER: layout mobile organizado"
+            );
+
+            return;
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded", iniciar
+        );
+    } else {
+        iniciar();
+    }
+})();
+</script>
 <script>(function(){let v=null;async function check(){try{let r=await fetch("./build.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;let d=await r.json();if(v===null)v=d.revisao;else if(v!==d.revisao)location.replace("./index.html?v="+encodeURIComponent(d.revisao));}catch(e){console.warn(e);}}check();setInterval(check,30000);})();</script>
 </body>
 </html>
