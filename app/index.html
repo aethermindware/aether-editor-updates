@@ -1237,8 +1237,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261115215501443"></script><script src="aether_auto_update_v1.js?v=20261115215501443"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261115215501443"></script>
+<script src="aether_update_v2.js?v=20261115215758374"></script><script src="aether_auto_update_v1.js?v=20261115215758374"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261115215758374"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -2289,6 +2289,212 @@ mensagem("Timeline V4 pronta para testes.");
         );
     } else {
         iniciar();
+    }
+})();
+</script>
+<!-- AETHER_MENU_CIRCULAR_V22 -->
+<style id="aether-menu-circular-v22">
+
+/* Ajuste fino do menu circular */
+#editor .aether-pro-menu-v2 {
+    position: relative !important;
+    display: block !important;
+    width: min(78vw, 250px) !important;
+    max-width: 250px !important;
+    min-width: 210px !important;
+    aspect-ratio: 1 / 1 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    background:
+        radial-gradient(circle,
+            #172842 0%,
+            #101b2c 58%,
+            #0b1320 100%) !important;
+    border: 1px solid rgba(108, 160, 255, .35) !important;
+    box-shadow:
+        inset 0 0 24px rgba(0,0,0,.30),
+        0 6px 20px rgba(0,0,0,.20) !important;
+}
+
+/* Todos os botoes ficam posicionados manualmente */
+#editor .aether-pro-menu-v2 button {
+    position: absolute !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+
+    width: 74px !important;
+    height: 54px !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 4px !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 12px !important;
+    color: #edf4ff !important;
+    text-align: center !important;
+    font-size: 11px !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+/* Centro */
+#editor .aether-pro-menu-v2 [data-aether-slot="ai"] {
+    left: 50% !important;
+    top: 50% !important;
+    width: 82px !important;
+    height: 82px !important;
+    border-radius: 50% !important;
+    background:
+        linear-gradient(135deg,
+            #2d7dff 0%,
+            #2f8cff 45%,
+            #1e5fd6 100%) !important;
+    font-weight: 700 !important;
+    box-shadow:
+        0 0 0 4px rgba(255,255,255,.04),
+        0 6px 18px rgba(38,105,233,.35) !important;
+    z-index: 2 !important;
+}
+
+/* Topo */
+#editor .aether-pro-menu-v2 [data-aether-slot="media"] {
+    left: 50% !important;
+    top: 23% !important;
+}
+
+/* Esquerda */
+#editor .aether-pro-menu-v2 [data-aether-slot="layer"] {
+    left: 22% !important;
+    top: 50% !important;
+}
+
+/* Direita */
+#editor .aether-pro-menu-v2 [data-aether-slot="audio"] {
+    left: 78% !important;
+    top: 50% !important;
+}
+
+/* Base */
+#editor .aether-pro-menu-v2 [data-aether-slot="voice"] {
+    left: 50% !important;
+    top: 77% !important;
+}
+
+/* Hover/toque */
+#editor .aether-pro-menu-v2 button:hover,
+#editor .aether-pro-menu-v2 button:focus-visible {
+    background: rgba(79, 130, 214, .20) !important;
+    outline: 1px solid rgba(117, 181, 255, .45) !important;
+}
+
+#editor .aether-pro-menu-v2 [data-aether-slot="ai"]:hover,
+#editor .aether-pro-menu-v2 [data-aether-slot="ai"]:focus-visible {
+    background:
+        linear-gradient(135deg,
+            #3b8cff 0%,
+            #49a0ff 50%,
+            #256be2 100%) !important;
+}
+
+/* Celular muito pequeno */
+@media (max-width: 420px) {
+    #editor .aether-pro-menu-v2 {
+        width: min(82vw, 225px) !important;
+        min-width: 190px !important;
+    }
+
+    #editor .aether-pro-menu-v2 button {
+        width: 66px !important;
+        height: 48px !important;
+        font-size: 10px !important;
+    }
+
+    #editor .aether-pro-menu-v2 [data-aether-slot="ai"] {
+        width: 74px !important;
+        height: 74px !important;
+    }
+
+    #editor .aether-pro-menu-v2 [data-aether-slot="media"] {
+        top: 24% !important;
+    }
+
+    #editor .aether-pro-menu-v2 [data-aether-slot="layer"] {
+        left: 23% !important;
+    }
+
+    #editor .aether-pro-menu-v2 [data-aether-slot="audio"] {
+        left: 77% !important;
+    }
+
+    #editor .aether-pro-menu-v2 [data-aether-slot="voice"] {
+        top: 76% !important;
+    }
+}
+
+/* No layout vertical pequeno, se quiser ainda mais firme */
+@media (max-width: 900px) and (orientation: portrait) {
+    #editor .aether-pro-menu-v2 {
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
+    }
+}
+</style>
+
+<script id="aether-menu-circular-v22-script">
+(() => {
+    "use strict";
+
+    function normalizar(txt) {
+        return String(txt || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
+    }
+
+    function aplicar() {
+        const root = document.getElementById("editor");
+        if (!root) return;
+
+        const menu = root.querySelector(".aether-pro-menu-v2");
+        if (!menu) return;
+
+        const botoes = [...menu.querySelectorAll("button")];
+        if (!botoes.length) return;
+
+        for (const b of botoes) {
+            const nome = normalizar(
+                (b.dataset.act || "") + " " +
+                (b.textContent || "") + " " +
+                (b.title || "")
+            );
+
+            if (/midia|media/.test(nome)) {
+                b.dataset.aetherSlot = "media";
+            } else if (/camada|layer/.test(nome)) {
+                b.dataset.aetherSlot = "layer";
+            } else if (/legenda|caption|\bia\b|\bai\b/.test(nome)) {
+                b.dataset.aetherSlot = "ai";
+            } else if (/audio/.test(nome)) {
+                b.dataset.aetherSlot = "audio";
+            } else if (/voz|rec|grav/.test(nome)) {
+                b.dataset.aetherSlot = "voice";
+            }
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", aplicar, { once: true });
+    } else {
+        aplicar();
     }
 })();
 </script>
