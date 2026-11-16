@@ -1350,8 +1350,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116181030467"></script><script src="aether_auto_update_v1.js?v=20261116181030467"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116181030467"></script>
+<script src="aether_update_v2.js?v=20261116181603019"></script><script src="aether_auto_update_v1.js?v=20261116181603019"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116181603019"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -5915,6 +5915,186 @@ header .aether-km-exportar-v1 {
 
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", iniciar, { once: true });
+    } else {
+        iniciar();
+    }
+})();
+</script>
+<!-- AETHER_TRILHAS_IGUAIS_V65 -->
+<style id="aether-trilhas-iguais-v65">
+
+/* Ajustar somente as outras trilhas */
+#editor #timelineScroll
+.ae-track.aether-trilha-alinhada-v65 {
+    position: relative !important;
+    overflow: visible !important;
+}
+
+/* Colocar os nomes na mesma coluna de Video */
+#editor #timelineScroll
+.ae-track.aether-trilha-alinhada-v65
+> .ae-track-label {
+    position: absolute !important;
+    left: var(--ae-label-left-v65) !important;
+    top: 0 !important;
+
+    width: var(--ae-label-width-v65) !important;
+    min-width: 0 !important;
+    height: 100% !important;
+
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex: none !important;
+
+    margin: 0 !important;
+    transform: none !important;
+
+    padding: 0 5px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    z-index: 4 !important;
+}
+
+/* Manter a identificacao das trilhas */
+#editor #timelineScroll
+.aether-trilha-alinhada-v65 > .ae-track-label {
+    font-weight: 600 !important;
+    font-size: 11px !important;
+}
+
+</style>
+
+<script id="aether-trilhas-iguais-v65-script">
+(() => {
+    "use strict";
+
+    if (window.AETHER_TRILHAS_IGUAIS_V65) return;
+    window.AETHER_TRILHAS_IGUAIS_V65 = true;
+
+    function alinhar() {
+        const timeline = document.getElementById(
+            "timelineScroll"
+        );
+
+        const faixa = document.getElementById("faixa");
+
+        if (!timeline || !faixa) return;
+
+        const trilhaVideo = faixa.closest(".ae-track");
+
+        const etiquetaVideo = trilhaVideo?.querySelector(
+            ":scope > .ae-track-label"
+        );
+
+        if (!trilhaVideo || !etiquetaVideo) return;
+
+        const referencia =
+            etiquetaVideo.getBoundingClientRect();
+
+        if (referencia.width < 20) return;
+
+        const trilhas = [
+            ...timeline.querySelectorAll(".ae-track")
+        ];
+
+        for (const trilha of trilhas) {
+            if (trilha === trilhaVideo) continue;
+
+            const etiqueta = trilha.querySelector(
+                ":scope > .ae-track-label"
+            );
+
+            if (!etiqueta) continue;
+
+            const rect = trilha.getBoundingClientRect();
+
+            if (!rect.width) continue;
+
+            // Usar a mesma posicao da etiqueta Video.
+            const esquerda = Math.round(
+                referencia.left - rect.left
+            );
+
+            const largura = Math.round(
+                referencia.width
+            );
+
+            // Evitar deslocamentos fora da estrutura.
+            if (
+                Math.abs(esquerda) > 200 ||
+                largura < 40 ||
+                largura > 160
+            ) {
+                continue;
+            }
+
+            trilha.style.setProperty(
+                "--ae-label-left-v65",
+                esquerda + "px"
+            );
+
+            trilha.style.setProperty(
+                "--ae-label-width-v65",
+                largura + "px"
+            );
+
+            trilha.classList.add(
+                "aether-trilha-alinhada-v65"
+            );
+        }
+    }
+
+    let agendado = false;
+
+    function atualizar() {
+        if (agendado) return;
+
+        agendado = true;
+
+        requestAnimationFrame(() => {
+            agendado = false;
+            alinhar();
+        });
+    }
+
+    function iniciar() {
+        const timeline = document.getElementById(
+            "timelineScroll"
+        );
+
+        if (!timeline) return;
+
+        new MutationObserver(atualizar).observe(
+            timeline,
+            {
+                childList: true,
+                subtree: true
+            }
+        );
+
+        window.addEventListener("resize", atualizar);
+
+        document.addEventListener("click", () => {
+            requestAnimationFrame(atualizar);
+        });
+
+        atualizar();
+
+        console.log(
+            "AETHER: TRILHAS V6.5 ALINHADAS"
+        );
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            iniciar,
+            { once: true }
+        );
     } else {
         iniciar();
     }
