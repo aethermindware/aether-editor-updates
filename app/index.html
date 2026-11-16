@@ -1315,8 +1315,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116015639224"></script><script src="aether_auto_update_v1.js?v=20261116015639224"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116015639224"></script>
+<script src="aether_update_v2.js?v=20261116020523511"></script><script src="aether_auto_update_v1.js?v=20261116020523511"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116020523511"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -4372,6 +4372,224 @@ header .aether-km-exportar-v1 {
         document.addEventListener(
             "DOMContentLoaded", iniciar,
             { once: true }
+        );
+    } else {
+        iniciar();
+    }
+})();
+</script>
+<!-- AETHER_PROPORCAO_REAL_V2 -->
+<style id="aether-proporcao-real-v2">
+#editor #preview {
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    margin-inline: auto !important;
+    justify-self: center !important;
+    align-self: center !important;
+    flex: 0 1 auto !important;
+    overflow: hidden !important;
+    background: #000 !important;
+}
+
+#editor #preview #video {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    background: #000 !important;
+}
+</style>
+
+<script id="aether-proporcao-real-v2-script">
+(() => {
+    "use strict";
+
+    if (window.AETHER_PROPORCAO_REAL_V2) return;
+    window.AETHER_PROPORCAO_REAL_V2 = true;
+
+    const formatos = {
+        "16:9": 16 / 9,
+        "9:16": 9 / 16,
+        "1:1": 1,
+        "4:3": 4 / 3
+    };
+
+    let escolhida = "16:9";
+
+    function extrair(texto) {
+        const valor = String(texto || "")
+            .replace(/\s+/g, "");
+
+        const encontrado = valor.match(/16:9|9:16|1:1|4:3/);
+
+        return encontrado ? encontrado[0] : null;
+    }
+
+    function opcaoAtual() {
+        const ativa = document.querySelector(
+            "#newProject .ratio.selected," +
+            ".ratio.ativo," +
+            "[data-ratio][aria-pressed='true']"
+        );
+
+        return ativa
+            ? extrair(ativa.dataset.ratio || ativa.textContent)
+            : null;
+    }
+
+    function aplicar(formato) {
+        const preview = document.getElementById("preview");
+        const video = document.getElementById("video");
+
+        if (!preview || !video || !formatos[formato]) return;
+
+        const proporcao = formatos[formato];
+
+        const larguraDisponivel = Math.max(
+            140,
+            (preview.parentElement?.clientWidth || 640) - 12
+        );
+
+        const alturaMaxima = Math.max(
+            170,
+            Math.min(window.innerHeight * 0.45, 440)
+        );
+
+        const altura = Math.min(
+            alturaMaxima,
+            larguraDisponivel / proporcao
+        );
+
+        const largura = altura * proporcao;
+
+        const definir = (nome, valor) => {
+            preview.style.setProperty(
+                nome, valor, "important"
+            );
+        };
+
+        definir("width", largura + "px");
+        definir("height", altura + "px");
+        definir("max-width", "100%");
+        definir("max-height", altura + "px");
+        definir("min-height", "0");
+        definir("aspect-ratio", formato.replace(":", " / "));
+        definir("margin-left", "auto");
+        definir("margin-right", "auto");
+        definir("justify-self", "center");
+        definir("align-self", "center");
+
+        video.style.setProperty(
+            "object-fit", "contain", "important"
+        );
+
+        escolhida = formato;
+
+        console.log(
+            "AETHER: formato da tela aplicado:", formato
+        );
+    }
+
+    function aplicarAoAbrir() {
+        const titulo = document.querySelector(
+            "#editorTitle, .editor-title"
+        );
+
+        const formato =
+            extrair(titulo?.textContent) ||
+            escolhida;
+
+        aplicar(formato);
+    }
+
+    function agendar(formato) {
+        if (formato) escolhida = formato;
+
+        requestAnimationFrame(aplicarAoAbrir);
+        setTimeout(aplicarAoAbrir, 100);
+        setTimeout(aplicarAoAbrir, 300);
+    }
+
+    // Captura a escolha antes de o projeto ser aberto.
+    document.addEventListener("click", evento => {
+        if (!(evento.target instanceof Element)) return;
+
+        const opcao = evento.target.closest(
+            "[data-ratio], .ratio"
+        );
+
+        if (opcao) {
+            const formato = extrair(
+                opcao.dataset.ratio || opcao.textContent
+            );
+
+            if (formato) escolhida = formato;
+        }
+
+        const criar = evento.target.closest(
+            "#createProject, #criarProjeto, " +
+            "#btnCriarProjeto, button"
+        );
+
+        if (
+            criar &&
+            (
+                criar.id === "createProject" ||
+                criar.id === "criarProjeto" ||
+                criar.id === "btnCriarProjeto" ||
+                (
+                    criar.closest("#newProject") &&
+                    /criar projeto/i.test(criar.textContent)
+                )
+            )
+        ) {
+            agendar(opcaoAtual() || escolhida);
+        }
+
+        const cartao = evento.target.closest(
+            ".project, .projeto-card, .projeto"
+        );
+
+        if (cartao) {
+            const formato = extrair(cartao.textContent);
+
+            if (formato) {
+                agendar(formato);
+            }
+        }
+    }, true);
+
+    function iniciar() {
+        const editor =
+            document.getElementById("editor") ||
+            document.getElementById("editorPage");
+
+        if (editor) {
+            new MutationObserver(() => {
+                if (!editor.hidden) {
+                    agendar(escolhida);
+                }
+            }).observe(editor, {
+                attributes: true,
+                attributeFilter: ["hidden"]
+            });
+        }
+
+        window.addEventListener(
+            "resize", aplicarAoAbrir
+        );
+
+        if (editor && !editor.hidden) {
+            agendar(escolhida);
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded", iniciar, {once:true}
         );
     } else {
         iniciar();
