@@ -1350,8 +1350,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116162413256"></script><script src="aether_auto_update_v1.js?v=20261116162413256"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116162413256"></script>
+<script src="aether_update_v2.js?v=20261116181030467"></script><script src="aether_auto_update_v1.js?v=20261116181030467"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116181030467"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -5779,6 +5779,142 @@ header .aether-km-exportar-v1 {
             iniciar,
             { once: true }
         );
+    } else {
+        iniciar();
+    }
+})();
+</script>
+<!-- AETHER_VIDEO_VISUAL_V64 -->
+<style id="aether-video-visual-v64">
+#aether-faixa-ajustada,
+#faixa.aether-faixa-ajustada {
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    min-width: 140px !important;
+}
+
+#faixa.aether-faixa-ajustada > * {
+    position: relative;
+    z-index: 1;
+}
+
+#faixa.aether-faixa-ajustada {
+    position: relative;
+}
+
+#faixa.aether-faixa-ajustada::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+}
+</style>
+
+<script id="aether-video-visual-v64-script">
+(function () {
+    "use strict";
+
+    if (window.AETHER_VIDEO_VISUAL_V64) return;
+    window.AETHER_VIDEO_VISUAL_V64 = true;
+
+    function textoTemVideo(el) {
+        if (!el) return false;
+        const t = (el.textContent || "").trim().toLowerCase();
+        return t.includes("vídeo") || t.includes("video");
+    }
+
+    function acharEtiquetaVideo(trilha, faixa) {
+        if (!trilha) return null;
+
+        const filhos = Array.from(trilha.children || []);
+        for (const filho of filhos) {
+            if (filho === faixa) continue;
+            if (textoTemVideo(filho)) return filho;
+        }
+
+        return null;
+    }
+
+    function ajustarFaixa() {
+        const faixa = document.getElementById("faixa");
+        if (!faixa) return;
+
+        const trilha = faixa.parentElement;
+        if (!trilha) return;
+
+        const etiqueta = acharEtiquetaVideo(trilha, faixa);
+
+        let recuo = 84;
+
+        if (etiqueta) {
+            const trilhaRect = trilha.getBoundingClientRect();
+            const etiquetaRect = etiqueta.getBoundingClientRect();
+
+            const calculado = Math.round(
+                (etiquetaRect.right - trilhaRect.left) + 10
+            );
+
+            if (Number.isFinite(calculado) && calculado > 40 && calculado < 220) {
+                recuo = calculado;
+            }
+
+            etiqueta.style.position = "relative";
+            etiqueta.style.zIndex = "3";
+        }
+
+        faixa.classList.add("aether-faixa-ajustada");
+        faixa.id = "faixa";
+
+        faixa.style.paddingLeft = recuo + "px";
+        faixa.style.paddingRight = "12px";
+        faixa.style.textIndent = "0";
+        faixa.style.backgroundClip = "padding-box";
+
+        if (!faixa.dataset.aetherTituloOriginal) {
+            faixa.dataset.aetherTituloOriginal = (faixa.textContent || "").trim();
+        }
+
+        const nome = (faixa.dataset.aetherTituloOriginal || "").trim();
+        if (nome) {
+            faixa.setAttribute("title", nome);
+        }
+    }
+
+    function iniciar() {
+        ajustarFaixa();
+
+        const faixa = document.getElementById("faixa");
+        if (faixa && faixa.parentElement) {
+            const obs = new MutationObserver(function () {
+                ajustarFaixa();
+            });
+
+            obs.observe(faixa.parentElement, {
+                childList: true,
+                subtree: true,
+                characterData: true
+            });
+        }
+
+        window.addEventListener("resize", ajustarFaixa);
+
+        document.addEventListener("click", function () {
+            requestAnimationFrame(ajustarFaixa);
+        });
+
+        setTimeout(ajustarFaixa, 120);
+        setTimeout(ajustarFaixa, 400);
+        setTimeout(ajustarFaixa, 900);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", iniciar, { once: true });
     } else {
         iniciar();
     }
