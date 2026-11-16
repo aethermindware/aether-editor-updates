@@ -1350,8 +1350,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116160936699"></script><script src="aether_auto_update_v1.js?v=20261116160936699"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116160936699"></script>
+<script src="aether_update_v2.js?v=20261116162413256"></script><script src="aether_auto_update_v1.js?v=20261116162413256"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116162413256"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -5620,6 +5620,163 @@ header .aether-km-exportar-v1 {
     if (document.readyState === "loading") {
         document.addEventListener(
             "DOMContentLoaded", iniciar,
+            { once: true }
+        );
+    } else {
+        iniciar();
+    }
+})();
+</script>
+<!-- AETHER_ALINHAR_VIDEO_V62 -->
+<script id="aether-alinhar-video-v62">
+(() => {
+    "use strict";
+
+    if (window.AETHER_ALINHAR_VIDEO_V62) return;
+    window.AETHER_ALINHAR_VIDEO_V62 = true;
+
+    function alinhar() {
+        const editor = document.getElementById("editor");
+        const faixa = document.getElementById("faixa");
+        const regua = document.querySelector(
+            "#timelineScroll .ae-ruler"
+        );
+
+        if (!editor || !faixa || !regua) return;
+
+        // Localizar a marca real de 00:00.
+        const marcas = [
+            ...regua.querySelectorAll("span")
+        ];
+
+        const zero = marcas.find(elemento =>
+            elementоTexto(elemento) === "00:00"
+        );
+
+        if (!zero) {
+            console.warn(
+                "Aether V6.2: marca 00:00 nao localizada."
+            );
+            return;
+        }
+
+        const rectZero = zero.getBoundingClientRect();
+        const rectFaixa = faixa.getBoundingClientRect();
+
+        if (!rectZero.width || !rectFaixa.width) {
+            return;
+        }
+
+        // Nao sobrescrever transformacoes preexistentes.
+        const deslocamentoAnterior = Number(
+            faixa.dataset.aetherDeslocamentoV62 || "0"
+        );
+
+        if (
+            !Number.isFinite(deslocamentoAnterior)
+        ) return;
+
+        const diferenca =
+            rectZero.left - rectFaixa.left;
+
+        if (Math.abs(diferenca) < 0.5) return;
+
+        const novoDeslocamento =
+            deslocamentoAnterior + diferenca;
+
+        // Protecao contra deslocamentos inesperados.
+        if (
+            !Number.isFinite(novoDeslocamento) ||
+            Math.abs(novoDeslocamento) > 350
+        ) {
+            console.warn(
+                "Aether V6.2: alinhamento fora do limite seguro."
+            );
+            return;
+        }
+
+        faixa.style.setProperty(
+            "translate",
+            novoDeslocamento + "px 0px",
+            "important"
+        );
+
+        faixa.dataset.aetherDeslocamentoV62 =
+            String(novoDeslocamento);
+
+        console.log(
+            "Aether: inicio do video alinhado em 00:00."
+        );
+    }
+
+    function elementоTexto(elemento) {
+        return (elemento.textContent || "")
+            .trim()
+            .replace(/\s+/g, "");
+    }
+
+    let pendente = false;
+
+    function agendar() {
+        if (pendente) return;
+
+        pendente = true;
+
+        requestAnimationFrame(() => {
+            pendente = false;
+            alinhar();
+        });
+    }
+
+    function iniciar() {
+        const faixa = document.getElementById("faixa");
+        const video = document.getElementById("video");
+
+        if (!faixa) return;
+
+        if (
+            faixa.style.translate &&
+            !faixa.dataset.aetherDeslocamentoV62
+        ) {
+            console.warn(
+                "Aether: faixa ja tem deslocamento. " +
+                "Alinhamento cancelado."
+            );
+            return;
+        }
+
+        if (video) {
+            video.addEventListener(
+                "loadedmetadata", agendar
+            );
+
+            video.addEventListener(
+                "emptied", agendar
+            );
+        }
+
+        window.addEventListener("resize", agendar);
+
+        const trilha = faixa.closest(".ae-track");
+
+        if (trilha) {
+            new MutationObserver(agendar).observe(
+                trilha,
+                {
+                    childList: true,
+                    subtree: true,
+                    characterData: true
+                }
+            );
+        }
+
+        agendar();
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            iniciar,
             { once: true }
         );
     } else {
