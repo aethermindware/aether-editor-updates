@@ -1315,8 +1315,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116014204533"></script><script src="aether_auto_update_v1.js?v=20261116014204533"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116014204533"></script>
+<script src="aether_update_v2.js?v=20261116015639224"></script><script src="aether_auto_update_v1.js?v=20261116015639224"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116015639224"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -4163,6 +4163,221 @@ header .aether-km-exportar-v1 {
         0 10px 28px rgba(0,0,0,.26) !important;
 }
 </style>
+<!-- AETHER_PROPORCAO_PREVIA_V1 -->
+<style id="aether-proporcao-previa-v1">
+
+/* Tela com proporcao selecionada */
+#preview {
+    position: relative !important;
+    box-sizing: border-box !important;
+    width: min(
+        100%,
+        calc(46vh * var(--ae-ratio-num, 1.77778))
+    ) !important;
+
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: var(--ae-ratio, 16 / 9) !important;
+
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+
+    overflow: hidden !important;
+    background: #000 !important;
+    border-radius: 10px !important;
+}
+
+/* Video sem distorcao */
+#preview #video {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    background: #000 !important;
+}
+
+/* Celulares */
+@media (max-width: 700px) {
+    #preview {
+        width: min(
+            100%,
+            calc(42vh * var(--ae-ratio-num, 1.77778))
+        ) !important;
+    }
+}
+
+</style>
+
+<script id="aether-proporcao-previa-v1-script">
+(() => {
+    "use strict";
+
+    if (window.AETHER_PROPORCAO_PREVIA_V1) return;
+    window.AETHER_PROPORCAO_PREVIA_V1 = true;
+
+    const formatos = {
+        "16:9": 16 / 9,
+        "9:16": 9 / 16,
+        "1:1": 1,
+        "4:3": 4 / 3
+    };
+
+    let escolhida = "16:9";
+
+    function identificar(texto) {
+        const t = String(texto || "").replace(/\s/g, "");
+        const encontrado = t.match(/(?:16:9|9:16|1:1|4:3)/);
+        return encontrado ? encontrado[0] : null;
+    }
+
+    function aplicar(proporcao) {
+        const preview = document.getElementById("preview");
+
+        if (!preview || !formatos[proporcao]) return;
+
+        escolhida = proporcao;
+
+        preview.style.setProperty(
+            "--ae-ratio",
+            proporcao.replace(":", " / ")
+        );
+
+        preview.style.setProperty(
+            "--ae-ratio-num",
+            String(formatos[proporcao])
+        );
+
+        preview.style.setProperty(
+            "aspect-ratio",
+            proporcao.replace(":", " / "),
+            "important"
+        );
+
+        console.log(
+            "AETHER: proporcao aplicada", proporcao
+        );
+    }
+
+    function descobrirOpcao(elemento) {
+        const botao = elemento.closest(
+            "button, [role='button'], .ratio, " +
+            "[data-ratio], [data-proporcao]"
+        );
+
+        if (!botao) return null;
+
+        return identificar(
+            botao.dataset.ratio ||
+            botao.dataset.proporcao ||
+            botao.textContent
+        );
+    }
+
+    document.addEventListener("click", evento => {
+        if (!(evento.target instanceof Element)) return;
+
+        const elemento = evento.target;
+
+        // Selecao da proporcao no formulario.
+        const telaCriacao = elemento.closest(
+            "#newProject, #novoProjeto, " +
+            ".novo-projeto, .new-project"
+        );
+
+        if (telaCriacao) {
+            const proporcao = descobrirOpcao(elemento);
+
+            if (proporcao) {
+                escolhida = proporcao;
+                return;
+            }
+
+            const botao = elemento.closest("button");
+
+            if (botao && (
+                /criar projeto/i.test(botao.textContent) ||
+                /createProject|criarProjeto/i.test(botao.id)
+            )) {
+                const selecionado = telaCriacao.querySelector(
+                    ".ratio.selected, .ratio.ativo, " +
+                    "[data-ratio][aria-pressed='true'], " +
+                    "[data-proporcao][aria-pressed='true']"
+                );
+
+                const proporcaoEscolhida =
+                    selecionado
+                    ? descobrirOpcao(selecionado)
+                    : escolhida;
+
+                requestAnimationFrame(() => {
+                    aplicar(proporcaoEscolhida || escolhida);
+                });
+            }
+        }
+
+        // Ao abrir projeto existente, aproveitar a
+        // proporcao informada no seu cartao.
+        const cartao = elemento.closest(
+            ".projeto, .projeto-card, .project, " +
+            "[data-project-id]"
+        );
+
+        if (cartao) {
+            const proporcao = identificar(
+                cartao.textContent
+            );
+
+            if (proporcao) {
+                requestAnimationFrame(() => {
+                    aplicar(proporcao);
+                });
+            }
+        }
+    });
+
+    function iniciar() {
+        const preview = document.getElementById("preview");
+        if (!preview) return;
+
+        // Respeitar a proporcao que o editor ja
+        // definiu inicialmente, quando reconhecivel.
+        const inicial = identificar(
+            preview.getAttribute("style")
+        );
+
+        aplicar(inicial || escolhida);
+
+        const editor =
+            document.getElementById("editor") ||
+            document.getElementById("editorPage");
+
+        if (editor) {
+            new MutationObserver(() => {
+                if (!editor.hidden) {
+                    requestAnimationFrame(() => {
+                        aplicar(escolhida);
+                    });
+                }
+            }).observe(editor, {
+                attributes: true,
+                attributeFilter: ["hidden"]
+            });
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded", iniciar,
+            { once: true }
+        );
+    } else {
+        iniciar();
+    }
+})();
+</script>
 <script>(function(){let v=null;async function check(){try{let r=await fetch("./build.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;let d=await r.json();if(v===null)v=d.revisao;else if(v!==d.revisao)location.replace("./index.html?v="+encodeURIComponent(d.revisao));}catch(e){console.warn(e);}}check();setInterval(check,30000);})();</script>
 </body>
 </html>
