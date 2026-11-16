@@ -1315,8 +1315,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116012002190"></script><script src="aether_auto_update_v1.js?v=20261116012002190"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116012002190"></script>
+<script src="aether_update_v2.js?v=20261116013833541"></script><script src="aether_auto_update_v1.js?v=20261116013833541"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116013833541"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -3925,6 +3925,156 @@ header .aether-km-exportar-v1 {
             "DOMContentLoaded",
             iniciar,
             { once: true }
+        );
+    } else {
+        iniciar();
+    }
+})();
+</script>
+<!-- AETHER_ILUMINACAO_REAL_V4 -->
+<style id="aether-iluminacao-v4">
+
+/* Desativar os efeitos antigos */
+#editor .aether-pro-menu-v2::before,
+#editor .aether-pro-menu-v2::after {
+    display: none !important;
+}
+
+/* Uma unica iluminacao real */
+#editor .aether-pro-menu-v2 .ae-fatia-real-v4 {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    background: rgba(255,255,255,.17) !important;
+    opacity: 0;
+    pointer-events: none !important;
+    z-index: 1 !important;
+    transition: opacity .18s ease;
+}
+
+/* Botoes acima da iluminacao */
+#editor .aether-pro-menu-v2 > button[data-aether-slot] {
+    z-index: 2 !important;
+}
+
+#editor .aether-pro-menu-v2
+> button[data-aether-slot="ai"] {
+    z-index: 3 !important;
+}
+
+/* Remover quadrado de destaque antigo */
+#editor .aether-pro-menu-v2
+> button[data-aether-slot]:not([data-aether-slot="ai"]):hover {
+    background: transparent !important;
+    border-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Manter indicador para navegacao por teclado */
+#editor .aether-pro-menu-v2
+> button[data-aether-slot]:focus-visible {
+    outline: 2px solid #8cc5ff !important;
+    outline-offset: 2px;
+}
+
+/* Nao mostrar fatia nas ferramentas do video */
+#editor .aether-pro-menu-v2.ae-video-ativo-v1
+.ae-fatia-real-v4,
+#editor .aether-pro-menu-v2.ae-video-ativo-v2
+.ae-fatia-real-v4 {
+    display: none !important;
+}
+</style>
+
+<script id="aether-iluminacao-v4-script">
+(() => {
+    "use strict";
+
+    function iniciar() {
+        const menu = document.querySelector(
+            "#editor .aether-pro-menu-v2"
+        );
+
+        if (!menu || menu.querySelector(".ae-fatia-real-v4")) {
+            return;
+        }
+
+        const fatia = document.createElement("div");
+        fatia.className = "ae-fatia-real-v4";
+        fatia.setAttribute("aria-hidden", "true");
+
+        menu.prepend(fatia);
+
+        const formatos = {
+            media: "polygon(50% 50%,0 0,100% 0)",
+            layer: "polygon(50% 50%,0 0,0 100%)",
+            audio: "polygon(50% 50%,100% 0,100% 100%)",
+            voice: "polygon(50% 50%,0 100%,100% 100%)"
+        };
+
+        const botoes = [
+            ...menu.querySelectorAll(
+                ":scope > button[data-aether-slot]"
+            )
+        ];
+
+        for (const botao of botoes) {
+            // O nome ja esta escrito abaixo do icone.
+            // Evita tooltip duplicada ao passar o mouse.
+            botao.removeAttribute("title");
+        }
+
+        const ia = botoes.find(
+            b => b.dataset.aetherSlot === "ai"
+        );
+
+        if (ia) {
+            ia.style.setProperty(
+                "background",
+                "linear-gradient(135deg,#2498ff,#1454cf)",
+                "important"
+            );
+            ia.style.setProperty(
+                "border-radius", "50%", "important"
+            );
+            ia.style.setProperty(
+                "box-shadow",
+                "0 0 18px rgba(36,135,255,.35)",
+                "important"
+            );
+            ia.style.setProperty(
+                "color", "#fff", "important"
+            );
+        }
+
+        menu.addEventListener("click", evento => {
+            if (!(evento.target instanceof Element)) return;
+
+            const botao = evento.target.closest(
+                "button[data-aether-slot]"
+            );
+
+            if (!botao || botao.parentElement !== menu) return;
+
+            const setor = botao.dataset.aetherSlot;
+
+            if (formatos[setor]) {
+                fatia.style.clipPath = formatos[setor];
+                fatia.style.opacity = "1";
+            } else {
+                fatia.style.opacity = "0";
+            }
+        }, true);
+
+        console.log("AETHER ILUMINACAO REAL V4 ATIVA");
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded", iniciar, {once:true}
         );
     } else {
         iniciar();
