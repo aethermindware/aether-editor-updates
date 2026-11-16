@@ -1350,8 +1350,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116181603019"></script><script src="aether_auto_update_v1.js?v=20261116181603019"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116181603019"></script>
+<script src="aether_update_v2.js?v=20261116193905006"></script><script src="aether_auto_update_v1.js?v=20261116193905006"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116193905006"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -6093,6 +6093,324 @@ header .aether-km-exportar-v1 {
         document.addEventListener(
             "DOMContentLoaded",
             iniciar,
+            { once: true }
+        );
+    } else {
+        iniciar();
+    }
+})();
+</script>
+<!-- AETHER_SEPARAR_MIDIAS_V66 -->
+<style id="aether-separar-midias-v66">
+
+/* Trilha de audio independente */
+#editor #timelineScroll .aether-v66-track-audio {
+    position: relative !important;
+    min-height: 46px;
+}
+
+/* Clipe de audio em verde */
+#editor #timelineScroll .aether-v66-audio-chip {
+    box-sizing: border-box !important;
+    background: #137d70 !important;
+    border: 1px solid #4bcab5 !important;
+    border-radius: 9px !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    z-index: 5 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Clipe de video permanece azul */
+#editor #timelineScroll .aether-v66-video-chip {
+    box-sizing: border-box !important;
+    background: #2563dc !important;
+    border: 1px solid #80b9ff !important;
+    border-radius: 9px !important;
+    color: white !important;
+    font-weight: 600 !important;
+    z-index: 5 !important;
+}
+
+/* Nomes das trilhas legiveis */
+#editor #timelineScroll .ae-track-label {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Nenhuma regra altera a agulha ou a regua */
+
+</style>
+
+<script id="aether-separar-midias-v66-script">
+(() => {
+    "use strict";
+
+    if (window.AETHER_SEPARAR_MIDIAS_V66) return;
+    window.AETHER_SEPARAR_MIDIAS_V66 = true;
+
+    const normalizar = s =>
+        String(s || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
+
+    let videoCorrigido = false;
+    let audioCorrigido = false;
+
+    function localizarBadge(trilha, extensao) {
+        if (!trilha) return null;
+
+        const folhas = [...trilha.querySelectorAll("*")]
+            .filter(el => {
+                if (el.children.length !== 0) return false;
+
+                const texto = [
+                    el.textContent,
+                    el.title,
+                    el.getAttribute("aria-label")
+                ].join(" ");
+
+                return extensao.test(texto);
+            });
+
+        for (const folha of folhas) {
+            let atual = folha;
+            let candidato = null;
+
+            while (atual && atual !== trilha) {
+                const rect = atual.getBoundingClientRect();
+
+                if (
+                    atual.id !== "faixa" &&
+                    !atual.classList.contains("ae-track-label") &&
+                    rect.width >= 65 &&
+                    rect.width <= 650 &&
+                    rect.height >= 23 &&
+                    rect.height <= 120
+                ) {
+                    candidato = atual;
+                }
+
+                atual = atual.parentElement;
+            }
+
+            if (candidato) return candidato;
+        }
+
+        return null;
+    }
+
+    function encontrarTrilhas(timeline) {
+        const faixa = document.getElementById("faixa");
+        const videoTrack = faixa?.closest(".ae-track");
+
+        const trilhas = [
+            ...timeline.querySelectorAll(".ae-track")
+        ];
+
+        const audioTrack = trilhas.find(trilha => {
+            if (trilha === videoTrack) return false;
+
+            const etiqueta = trilha.querySelector(
+                ":scope > .ae-track-label"
+            );
+
+            const nome = normalizar(etiqueta?.textContent);
+
+            return nome.includes("audio");
+        });
+
+        return { faixa, videoTrack, audioTrack };
+    }
+
+    function corrigir() {
+        const timeline = document.getElementById(
+            "timelineScroll"
+        );
+
+        if (!timeline) return;
+
+        const {
+            faixa,
+            videoTrack,
+            audioTrack
+        } = encontrarTrilhas(timeline);
+
+        if (!faixa || !videoTrack || !audioTrack) {
+            console.warn(
+                "Aether V6.6: trilhas nao identificadas."
+            );
+            return;
+        }
+
+        const origem = faixa.getBoundingClientRect();
+
+        if (!origem.width) return;
+
+        // Identificar a etiqueta do arquivo MP4.
+        // Nao alterar o conteudo nem a duracao.
+        if (!videoCorrigido) {
+            const videoChip = localizarBadge(
+                videoTrack, /\.mp4\b/i
+            );
+
+            if (
+                videoChip &&
+                videoChip !== faixa &&
+                !videoChip.contains(faixa)
+            ) {
+                const atual = videoChip.getBoundingClientRect();
+                const diferenca = origem.left - atual.left;
+
+                if (
+                    Number.isFinite(diferenca) &&
+                    Math.abs(diferenca) <= 350 &&
+                    !videoChip.style.translate
+                ) {
+                    videoChip.style.setProperty(
+                        "translate",
+                        diferenca + "px 0px",
+                        "important"
+                    );
+
+                    videoChip.classList.add(
+                        "aether-v66-video-chip"
+                    );
+
+                    videoCorrigido = true;
+
+                    console.log(
+                        "Aether V6.6: etiqueta MP4 alinhada."
+                    );
+                }
+            }
+        }
+
+        // Procurar um clipe MP3 colocado incorretamente
+        // dentro da trilha de video.
+        if (!audioCorrigido) {
+            const audioChip = localizarBadge(
+                videoTrack, /\.(mp3|wav|m4a|ogg)\b/i
+            );
+
+            if (
+                audioChip &&
+                audioChip !== faixa &&
+                !audioChip.contains(faixa) &&
+                !audioChip.contains(videoTrack)
+            ) {
+                const inicio = faixa.getBoundingClientRect().left;
+                const rectAudio = audioTrack.getBoundingClientRect();
+
+                if (
+                    Number.isFinite(inicio) &&
+                    rectAudio.width > 50
+                ) {
+                    const esquerda = inicio - rectAudio.left;
+
+                    if (
+                        esquerda >= -10 &&
+                        esquerda <= 350
+                    ) {
+                        // Mover o elemento existente preserva
+                        // seus ouvintes de clique.
+                        audioTrack.appendChild(audioChip);
+
+                        audioTrack.classList.add(
+                            "aether-v66-track-audio"
+                        );
+
+                        audioChip.classList.add(
+                            "aether-v66-audio-chip"
+                        );
+
+                        audioChip.style.setProperty(
+                            "position", "absolute", "important"
+                        );
+
+                        audioChip.style.setProperty(
+                            "left", esquerda + "px", "important"
+                        );
+
+                        audioChip.style.setProperty(
+                            "top", "50%", "important"
+                        );
+
+                        audioChip.style.setProperty(
+                            "transform",
+                            "translateY(-50%)",
+                            "important"
+                        );
+
+                        audioChip.style.setProperty(
+                            "translate", "none", "important"
+                        );
+
+                        audioChip.style.setProperty(
+                            "margin", "0", "important"
+                        );
+
+                        audioCorrigido = true;
+
+                        console.log(
+                            "Aether V6.6: MP3 movido para Audio."
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    function iniciar() {
+        corrigir();
+
+        // Tentar novamente quando o editor carregar
+        // os clipes, sem repetir movimentos ja feitos.
+        const timeline = document.getElementById(
+            "timelineScroll"
+        );
+
+        if (!timeline) return;
+
+        let pendente = false;
+
+        const observar = new MutationObserver(() => {
+            if (pendente) return;
+
+            pendente = true;
+
+            requestAnimationFrame(() => {
+                pendente = false;
+
+                if (!videoCorrigido || !audioCorrigido) {
+                    corrigir();
+                }
+
+                if (videoCorrigido && audioCorrigido) {
+                    observar.disconnect();
+                }
+            });
+        });
+
+        observar.observe(timeline, {
+            childList: true,
+            subtree: true
+        });
+
+        setTimeout(corrigir, 300);
+        setTimeout(corrigir, 1000);
+
+        console.log(
+            "AETHER: SEPARACAO DE MIDIAS V6.6 INICIADA"
+        );
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded", iniciar,
             { once: true }
         );
     } else {
