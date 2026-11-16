@@ -1315,8 +1315,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116025459422"></script><script src="aether_auto_update_v1.js?v=20261116025459422"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116025459422"></script>
+<script src="aether_update_v2.js?v=20261116030528739"></script><script src="aether_auto_update_v1.js?v=20261116030528739"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116030528739"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -4608,331 +4608,130 @@ header .aether-km-exportar-v1 {
 
 
 
-<!-- AETHER_ANDROID_FIX_V2 -->
-<style id="aether-android-fix-v2">
 
-/* Area externa da pre-visualizacao */
-#editor .aether-video-externo-fix-v2,
-#editor .aether-pro-video-v2:not(#preview) {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-width: 0 !important;
-    min-height: 0 !important;
-    background: transparent !important;
-    background-image: none !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-}
 
-/* Moldura apenas no quadro escolhido */
-#editor #preview {
-    position: relative !important;
-    margin-inline: auto !important;
-    flex-shrink: 0 !important;
-    max-width: 100% !important;
-    border: 2px solid #4895ff !important;
-    border-radius: 10px !important;
-    background: #000 !important;
-    background-image: none !important;
-    box-shadow: 0 3px 12px #0005 !important;
-    overflow: hidden !important;
-}
 
-#editor #preview::before,
-#editor #preview::after {
-    content: none !important;
-    display: none !important;
-}
 
-#editor #preview video {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: contain !important;
-    background: #000 !important;
-}
+<!-- AETHER_ANDROID_TOPO_V3 -->
+<style id="aether-android-topo-v3">
 
-/* Timeline */
-#editor #timelineScroll {
-    max-width: 100% !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Selecionar o clipe sem bordas brancas duplicadas */
-#editor .ae-clip:focus:not(:focus-visible),
-#editor #faixa button:focus:not(:focus-visible) {
-    outline: none !important;
-}
-
-#editor .ae-clip.selected {
-    outline: 2px solid #579cff !important;
-    outline-offset: -2px !important;
-    box-shadow: none !important;
-}
-
-#editor .ae-clip:focus-visible {
-    outline: 2px solid #8bc5ff !important;
-    outline-offset: -2px !important;
-}
-
-/* Ajustes exclusivos para telas de toque */
 @media (pointer: coarse) {
 
-    body {
+    html {
+        scroll-padding-top: 0 !important;
         overflow-x: hidden !important;
-        padding-top: max(
-            env(safe-area-inset-top, 0px),
-            24px
-        ) !important;
+    }
+
+    body {
+        margin: 0 !important;
+
+        /* Usar a area segura real, sem somar 24px */
+        padding-top:
+            env(safe-area-inset-top, 0px) !important;
+
+        padding-bottom:
+            env(safe-area-inset-bottom, 0px) !important;
+
+        overflow-x: hidden !important;
     }
 
     header {
-        position: sticky !important;
-        top: 24px !important;
-        z-index: 900 !important;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        transform: none !important;
     }
-}
-
-/* Android horizontal */
-@media (pointer: coarse) and (orientation: landscape) {
 
     #editor {
-        width: 100% !important;
         max-width: 100% !important;
-        padding: 4px !important;
-    }
-
-    #editor .aether-pro-stage-v2 {
-        display: grid !important;
-        grid-template-columns:
-            44px minmax(0, 1fr) minmax(150px, 195px)
-            !important;
-        gap: 6px !important;
-        padding: 6px !important;
-        align-items: center !important;
         min-width: 0 !important;
     }
 
-    #editor #preview {
-        max-height: 46dvh !important;
+    #editor .aether-pro-stage-v2 {
+        min-width: 0 !important;
+        align-items: center !important;
     }
 
     #editor .aether-km-shell-v1 {
-        width: 100% !important;
-        max-width: 195px !important;
-        min-width: 0 !important;
-        gap: 5px !important;
         align-self: center !important;
-    }
-
-    #editor .aether-km-shell-v1
-    .aether-pro-menu-v2:not(.ae-video-ativo-v2) {
-        width: min(100%, 180px) !important;
-        height: auto !important;
         min-width: 0 !important;
-        max-width: 180px !important;
-        aspect-ratio: 1 / 1 !important;
     }
 
-    #editor .aether-km-shell-v1
-    .aether-pro-menu-v2
-    > button[data-aether-slot="ai"] {
-        width: 68px !important;
-        height: 68px !important;
-        min-width: 68px !important;
-        min-height: 68px !important;
-        max-width: 68px !important;
-        max-height: 68px !important;
-        border-radius: 50% !important;
-    }
-
-    #editor .aether-km-row-v1
-    .aether-km-botao-v1 {
-        width: 40px !important;
-        height: 40px !important;
-        min-width: 40px !important;
-        min-height: 40px !important;
-    }
-}
-
-/* Android vertical */
-@media (pointer: coarse) and (orientation: portrait) {
-
-    #editor #preview {
-        max-height: 42dvh !important;
-    }
-
-    #editor .aether-pro-stage-v2 {
-        gap: 7px !important;
-        min-width: 0 !important;
+    #editor #timelineScroll {
+        max-width: 100% !important;
+        overflow-x: auto !important;
     }
 }
 
 </style>
 
-<script id="aether-android-fix-v2-script">
+<script id="aether-android-topo-v3-script">
 (() => {
     "use strict";
 
-    if (window.AETHER_ANDROID_FIX_V2) return;
-    window.AETHER_ANDROID_FIX_V2 = true;
+    if (window.AETHER_ANDROID_TOPO_V3) return;
+    window.AETHER_ANDROID_TOPO_V3 = true;
 
-    const normalizar = texto =>
-        String(texto || "")
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .trim()
-            .toLowerCase();
+    function celular() {
+        return matchMedia("(pointer: coarse)").matches;
+    }
 
-    function corrigirPreview() {
-        const preview =
-            document.getElementById("preview");
+    function subir() {
+        if (!celular()) return;
 
-        if (!preview) return;
+        window.scrollTo(0, 0);
 
-        const externo = preview.parentElement;
+        const pagina = document.scrollingElement;
 
-        if (
-            externo &&
-            (
-                externo.classList.contains(
-                    "aether-pro-video-v2"
-                ) ||
-                externo.classList.contains(
-                    "aether-layout-preview"
-                )
-            )
-        ) {
-            externo.classList.add(
-                "aether-video-externo-fix-v2"
-            );
+        if (pagina) {
+            pagina.scrollTop = 0;
         }
     }
 
-    function removerAvisoFlutuante() {
-        if (!document.body) return;
-
-        const cabecalho =
-            document.querySelector("header");
-
-        const walker = document.createTreeWalker(
-            document.body,
-            NodeFilter.SHOW_TEXT
-        );
-
-        let node;
-
-        while ((node = walker.nextNode())) {
-            if (
-                normalizar(node.nodeValue) !==
-                "atualizacoes automaticas"
-            ) continue;
-
-            let elemento = node.parentElement;
-
-            if (
-                !elemento ||
-                (
-                    cabecalho &&
-                    cabecalho.contains(elemento)
-                )
-            ) continue;
-
-            let alvo = null;
-
-            for (
-                let i = 0;
-                elemento &&
-                elemento !== document.body &&
-                i < 5;
-                i++, elemento = elemento.parentElement
-            ) {
-                const rect =
-                    elemento.getBoundingClientRect();
-
-                if (
-                    normalizar(elemento.textContent) ===
-                    "atualizacoes automaticas" &&
-                    rect.width > 60 &&
-                    rect.width < 460 &&
-                    rect.height > 8 &&
-                    rect.height < 100
-                ) {
-                    alvo = elemento;
-                }
-            }
-
-            if (alvo) {
-                alvo.style.setProperty(
-                    "display",
-                    "none",
-                    "important"
-                );
-            }
-        }
-    }
-
-    function ajustar() {
-        corrigirPreview();
-        removerAvisoFlutuante();
-    }
-
-    function voltarAoTopo() {
-        if (!matchMedia("(pointer: coarse)").matches) {
-            return;
-        }
-
-        requestAnimationFrame(() => {
-            window.scrollTo(0, 0);
-        });
+    function subirDepois() {
+        requestAnimationFrame(subir);
+        setTimeout(subir, 120);
+        setTimeout(subir, 400);
     }
 
     function iniciar() {
-        ajustar();
-
-        if ("scrollRestoration" in history) {
-            history.scrollRestoration = "manual";
-        }
-
-        let agendado = false;
-
-        new MutationObserver(() => {
-            if (agendado) return;
-
-            agendado = true;
-
-            requestAnimationFrame(() => {
-                agendado = false;
-                ajustar();
-            });
-
-        }).observe(document.body, {
-            subtree: true,
-            childList: true,
-            characterData: true
-        });
-
         document.addEventListener("click", evento => {
             if (!(evento.target instanceof Element)) {
                 return;
             }
 
-            if (evento.target.closest(
-                "#createProject, #criarProjeto, .project"
-            )) {
-                setTimeout(voltarAoTopo, 100);
+            const abrir = evento.target.closest(
+                "#createProject, #criarProjeto, " +
+                ".project, .projeto-card"
+            );
+
+            if (abrir) {
+                subirDepois();
             }
         });
 
-        window.addEventListener("pageshow", () => {
-            ajustar();
-            voltarAoTopo();
+        document.addEventListener("change", evento => {
+            if (
+                evento.target?.matches?.(
+                    "#arquivo, #pickVideo"
+                )
+            ) {
+                subirDepois();
+            }
         });
 
-        console.log("AETHER ANDROID FIX V2 ATIVO");
+        window.addEventListener(
+            "pageshow", subirDepois
+        );
+
+        window.addEventListener(
+            "orientationchange", subirDepois
+        );
+
+        console.log(
+            "AETHER: ENQUADRAMENTO ANDROID V3 ATIVO"
+        );
     }
 
     if (document.readyState === "loading") {
