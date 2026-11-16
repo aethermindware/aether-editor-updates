@@ -1350,8 +1350,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116150742690"></script><script src="aether_auto_update_v1.js?v=20261116150742690"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116150742690"></script>
+<script src="aether_update_v2.js?v=20261116154116070"></script><script src="aether_auto_update_v1.js?v=20261116154116070"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116154116070"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -5160,6 +5160,188 @@ header .aether-km-exportar-v1 {
     } else {
         iniciar();
     }
+})();
+</script>
+<!-- AETHER_TIMELINE_CAPCUT_V6 -->
+<style id="aether-timeline-capcut-v6">
+
+/* VISUAL CAPCUT: sem modificar agulha ou regua */
+
+/* Trilhas com acabamento profissional */
+#editor #timelineScroll .ae-track {
+    background-color: #202329 !important;
+    border: 1px solid #343a46 !important;
+    border-radius: 5px !important;
+    box-shadow: none !important;
+}
+
+/* Faixa de video */
+#editor #timelineScroll
+.aether-v6-track-video {
+    background-color: #222833 !important;
+    border-color: #364761 !important;
+}
+
+/* Faixa de audio */
+#editor #timelineScroll
+.aether-v6-track-audio {
+    background-color: #1a302e !important;
+    border-color: #315e59 !important;
+}
+
+/* Faixa de texto */
+#editor #timelineScroll
+.aether-v6-track-texto {
+    background-color: #302838 !important;
+    border-color: #58446c !important;
+}
+
+/* Faixa de camadas */
+#editor #timelineScroll
+.aether-v6-track-camadas {
+    background-color: #252a36 !important;
+    border-color: #414b65 !important;
+}
+
+/* Clipes de video */
+#editor #timelineScroll .ae-clip {
+    box-sizing: border-box !important;
+    border-radius: 5px !important;
+    border: 1px solid #5b92ce !important;
+    background-color: #365c88 !important;
+    box-shadow: 0 2px 7px #0004 !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* Clipe selecionado */
+#editor #timelineScroll
+.ae-clip.selected {
+    border: 2px solid #ffffff !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px #3a88f5 !important;
+}
+
+/* Audio e texto usam cores distintas */
+#editor #timelineScroll
+.aether-v6-track-audio .ae-clip {
+    background-color: #27685e !important;
+    border-color: #4ec2aa !important;
+}
+
+#editor #timelineScroll
+.aether-v6-track-texto .ae-clip {
+    background-color: #695183 !important;
+    border-color: #ad87dd !important;
+}
+
+/* Ferramentas da V5 com aparencia mais compacta */
+#editor #ae-ref-tools-v1 {
+    background: #171b22 !important;
+    border: 1px solid #333b49 !important;
+    border-radius: 9px !important;
+    padding: 9px !important;
+    gap: 8px !important;
+}
+
+#editor #ae-ref-tools-v1 button {
+    background: #292e38 !important;
+    border: 1px solid #414958 !important;
+    border-radius: 9px !important;
+    color: #f5f7fb !important;
+}
+
+#editor #ae-ref-tools-v1 button:active {
+    background: #3d5477 !important;
+}
+
+#editor #ae-ref-tools-v1 button:focus-visible {
+    outline: 2px solid #76b3ff !important;
+}
+
+/* Celular */
+@media (max-width: 700px) {
+    #editor #ae-ref-tools-v1 {
+        padding: 6px !important;
+        gap: 5px !important;
+    }
+
+    #editor #ae-ref-tools-v1 button {
+        font-size: 10px !important;
+        padding: 6px !important;
+    }
+}
+
+</style>
+
+<script id="aether-timeline-capcut-v6-script">
+(() => {
+    "use strict";
+
+    if (window.AETHER_TIMELINE_CAPCUT_V6) return;
+    window.AETHER_TIMELINE_CAPCUT_V6 = true;
+
+    function normalizar(texto) {
+        return String(texto || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
+    }
+
+    function identificarTrilhas() {
+        const timeline = document.getElementById(
+            "timelineScroll"
+        );
+
+        if (!timeline) return;
+
+        const trilhas = timeline.querySelectorAll(
+            ".ae-track"
+        );
+
+        for (const trilha of trilhas) {
+            const rotulo = trilha.querySelector(
+                ".ae-track-label, .track-label"
+            );
+
+            const texto = normalizar(
+                rotulo?.textContent ||
+                trilha.textContent.slice(0, 35)
+            );
+
+            if (texto.includes("video")) {
+                trilha.classList.add(
+                    "aether-v6-track-video"
+                );
+            } else if (texto.includes("audio")) {
+                trilha.classList.add(
+                    "aether-v6-track-audio"
+                );
+            } else if (texto.includes("texto")) {
+                trilha.classList.add(
+                    "aether-v6-track-texto"
+                );
+            } else if (texto.includes("camadas")) {
+                trilha.classList.add(
+                    "aether-v6-track-camadas"
+                );
+            }
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            identificarTrilhas,
+            { once: true }
+        );
+    } else {
+        identificarTrilhas();
+    }
+
+    console.log(
+        "AETHER TIMELINE CAPCUT V6 ATIVADA"
+    );
 })();
 </script>
 <script>(function(){let v=null;async function check(){try{let r=await fetch("./build.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;let d=await r.json();if(v===null)v=d.revisao;else if(v!==d.revisao)location.replace("./index.html?v="+encodeURIComponent(d.revisao));}catch(e){console.warn(e);}}check();setInterval(check,30000);})();</script>
