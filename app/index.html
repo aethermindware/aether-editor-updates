@@ -1315,8 +1315,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116022321509"></script><script src="aether_auto_update_v1.js?v=20261116022321509"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116022321509"></script>
+<script src="aether_update_v2.js?v=20261116022957929"></script><script src="aether_auto_update_v1.js?v=20261116022957929"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116022957929"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -4596,176 +4596,88 @@ header .aether-km-exportar-v1 {
     }
 })();
 </script>
-<!-- AETHER_BORDA_VISUAL_V1 -->
-<style id="aether-borda-visual-v1">
-#preview{
-    position:relative !important;
-    overflow:visible !important;
-    border:2px solid rgba(88,150,255,.70) !important;
+
+
+
+
+<!-- AETHER_MOLDURA_CORRIGIDA_V2 -->
+<style id="aether-moldura-corrigida-v2">
+
+/* Somente o quadro real recebe borda */
+#editor #preview {
+    position: relative !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    background: #000 !important;
+
+    border: 2px solid #539aff !important;
+    border-radius: 10px !important;
+
     box-shadow:
-        0 0 0 1px rgba(255,255,255,.04) inset,
-        0 0 28px rgba(45,120,255,.16),
-        0 10px 34px rgba(0,0,0,.26) !important;
-    transition:
-        width .22s ease,
-        height .22s ease,
-        border-radius .22s ease,
-        box-shadow .22s ease,
-        transform .22s ease !important;
-    background:#000 !important;
+        0 0 0 3px rgba(65,140,255,.10),
+        0 5px 18px rgba(0,0,0,.25) !important;
 }
 
-#preview::before{
-    content:"" !important;
-    position:absolute !important;
-    inset:-10px !important;
-    border:1.5px dashed rgba(115,170,255,.38) !important;
-    border-radius:inherit !important;
-    pointer-events:none !important;
+/* Remover etiquetas cortadas e bordas duplicadas */
+#editor #preview::before,
+#editor #preview::after {
+    content: none !important;
+    display: none !important;
 }
 
-#preview::after{
-    content:attr(data-ratio-label) !important;
-    position:absolute !important;
-    top:-14px !important;
-    left:14px !important;
-    padding:5px 10px !important;
-    border-radius:999px !important;
-    font-size:12px !important;
-    font-weight:700 !important;
-    letter-spacing:.3px !important;
-    color:#fff !important;
-    background:linear-gradient(135deg,#3f8cff,#5aa2ff) !important;
-    box-shadow:0 8px 20px rgba(42,126,255,.28) !important;
-    pointer-events:none !important;
+/* A parte externa nao e uma segunda tela */
+#editor .aether-pro-video-v2:not(#preview),
+#editor .aether-layout-preview:not(#preview),
+#editor .aether-preview-externo-fix-v2 {
+    background: transparent !important;
+    background-image: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
 }
 
-#preview[data-aether-ratio="16:9"]{
-    border-radius:20px !important;
+/* Manter video dentro da proporcao escolhida */
+#editor #preview #video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    background: #000 !important;
 }
 
-#preview[data-aether-ratio="9:16"]{
-    border-radius:28px !important;
-    box-shadow:
-        0 0 0 1px rgba(255,255,255,.05) inset,
-        0 0 34px rgba(45,120,255,.18),
-        0 12px 38px rgba(0,0,0,.30) !important;
-}
-
-#preview[data-aether-ratio="1:1"]{
-    border-radius:24px !important;
-}
-
-#preview[data-aether-ratio="4:3"]{
-    border-radius:22px !important;
-}
-
-#preview #video{
-    width:100% !important;
-    height:100% !important;
-    object-fit:contain !important;
-    border-radius:inherit !important;
-    background:#000 !important;
-}
 </style>
 
-<script id="aether-borda-visual-v1-script">
+<script id="aether-moldura-corrigida-v2-script">
 (() => {
     "use strict";
-    if (window.AETHER_BORDA_VISUAL_V1) return;
-    window.AETHER_BORDA_VISUAL_V1 = true;
 
-    function $(id){ return document.getElementById(id); }
+    function iniciar() {
+        const preview = document.getElementById("preview");
+        const editor = document.getElementById("editor");
 
-    const formatos = {
-        "16:9": 16/9,
-        "9:16": 9/16,
-        "1:1": 1,
-        "4:3": 4/3
-    };
+        if (!preview || !editor) return;
 
-    function normalizar(txt){
-        const m = String(txt || "").replace(/\s+/g,"").match(/16:9|9:16|1:1|4:3/);
-        return m ? m[0] : null;
-    }
+        const externo = preview.parentElement;
 
-    function obterFormatoAtual(){
-        const ativo = document.querySelector(
-            "#newProject .ratio.selected, .ratio.selected, .ratio.ativo, [data-ratio].selected, [data-ratio][aria-pressed='true']"
-        );
-
-        if (ativo) {
-            const r = normalizar(ativo.dataset.ratio || ativo.textContent);
-            if (r) return r;
+        if (
+            externo &&
+            externo !== editor &&
+            !externo.querySelector(".aether-pro-menu-v2") &&
+            !externo.querySelector("#timelineScroll")
+        ) {
+            externo.classList.add(
+                "aether-preview-externo-fix-v2"
+            );
         }
 
-        const titulo = document.querySelector("#editorTitle, .editor-title");
-        const rt = normalizar(titulo ? titulo.textContent : "");
-        if (rt) return rt;
-
-        const preview = $("preview");
-        if (preview) {
-            const w = preview.clientWidth || 0;
-            const h = preview.clientHeight || 0;
-            if (w > 0 && h > 0) {
-                const atual = w / h;
-                let melhor = "16:9";
-                let menor = Infinity;
-
-                Object.entries(formatos).forEach(([nome, valor]) => {
-                    const dif = Math.abs(atual - valor);
-                    if (dif < menor) {
-                        menor = dif;
-                        melhor = nome;
-                    }
-                });
-
-                return melhor;
-            }
-        }
-
-        return "16:9";
-    }
-
-    function aplicarBorda(){
-        const preview = $("preview");
-        if (!preview) return;
-
-        const formato = obterFormatoAtual();
-
-        preview.setAttribute("data-aether-ratio", formato);
-        preview.setAttribute("data-ratio-label", "Tela " + formato);
-
-        if (formato === "9:16") {
-            preview.style.transform = "translateY(0)";
-        } else {
-            preview.style.transform = "translateY(0)";
-        }
-    }
-
-    function instalarObservacao(){
-        const preview = $("preview");
-        if (!preview) return;
-
-        new ResizeObserver(() => aplicarBorda()).observe(preview);
-
-        document.addEventListener("click", function(){
-            requestAnimationFrame(aplicarBorda);
-            setTimeout(aplicarBorda, 120);
-            setTimeout(aplicarBorda, 280);
-        }, true);
-
-        window.addEventListener("resize", aplicarBorda);
-
-        aplicarBorda();
-        setTimeout(aplicarBorda, 150);
-        setTimeout(aplicarBorda, 350);
+        console.log("AETHER: MOLDURA V2 CORRIGIDA");
     }
 
     if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", instalarObservacao, { once:true });
+        document.addEventListener(
+            "DOMContentLoaded", iniciar, {once:true}
+        );
     } else {
-        instalarObservacao();
+        iniciar();
     }
 })();
 </script>
