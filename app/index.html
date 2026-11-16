@@ -1350,8 +1350,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116154116070"></script><script src="aether_auto_update_v1.js?v=20261116154116070"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116154116070"></script>
+<script src="aether_update_v2.js?v=20261116160936699"></script><script src="aether_auto_update_v1.js?v=20261116160936699"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116160936699"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -5342,6 +5342,289 @@ header .aether-km-exportar-v1 {
     console.log(
         "AETHER TIMELINE CAPCUT V6 ATIVADA"
     );
+})();
+</script>
+<!-- AETHER_TIMELINE_MODO_CORTE_V61 -->
+<style id="aether-modo-corte-v61">
+
+/* Barra de ferramentas compacta */
+#editor #ae-ref-tools-v1 {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+
+    min-height: 0 !important;
+    margin: 5px 0 !important;
+    padding: 6px !important;
+
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scrollbar-width: thin;
+}
+
+/* Ferramentas em uma linha */
+#editor #ae-ref-tools-v1 .ae-ref-tools-group {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 6px !important;
+    flex-shrink: 0;
+}
+
+#editor #ae-ref-tools-v1
+.ae-ref-tools-group button {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-width: 0 !important;
+    min-height: 43px !important;
+    height: 43px !important;
+    width: auto !important;
+
+    padding: 5px 10px !important;
+    gap: 6px !important;
+
+    border-radius: 8px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+}
+
+#editor #ae-ref-tools-v1 .ae-ref-ico {
+    font-size: 18px !important;
+}
+
+/* Informacao de desenvolvimento fica no tooltip */
+#editor #ae-ref-ai small {
+    display: none !important;
+}
+
+/* Botao de corte com destaque */
+#editor #aether-dividir-v61 {
+    background: #2563eb !important;
+    border-color: #508fff !important;
+    color: white !important;
+    font-weight: 700 !important;
+}
+
+/* Clipe mais facil de reconhecer e selecionar */
+#editor #timelineScroll .ae-clip {
+    min-height: 46px;
+    box-sizing: border-box !important;
+    cursor: pointer;
+}
+
+#editor #timelineScroll
+.ae-clip.aether-clipe-selecionado-v61 {
+    border: 2px solid #ffffff !important;
+    outline: none !important;
+    box-shadow: 0 0 0 1px #4c97ff !important;
+}
+
+/* Manter os nomes legiveis */
+#editor #timelineScroll .ae-clip {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    text-overflow: ellipsis;
+}
+
+/* Celular: ferramentas rolaveis horizontalmente */
+@media (pointer: coarse) {
+    #editor #ae-ref-tools-v1 {
+        justify-content: flex-start !important;
+        touch-action: pan-x;
+    }
+
+    #editor #ae-ref-tools-v1
+    .ae-ref-tools-group button {
+        min-height: 45px !important;
+        height: 45px !important;
+    }
+}
+
+</style>
+
+<script id="aether-modo-corte-v61-script">
+(() => {
+    "use strict";
+
+    if (window.AETHER_MODO_CORTE_V61) return;
+
+    function iniciar() {
+        const editor = document.getElementById("editor");
+        const timeline = document.getElementById("timelineScroll");
+        const ferramentas =
+            document.getElementById("ae-ref-tools-v1");
+
+        if (!editor || !timeline || !ferramentas) return;
+
+        window.AETHER_MODO_CORTE_V61 = true;
+
+        const normalizar = texto =>
+            String(texto || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .trim()
+                .toLowerCase();
+
+        // Seleção visual de clipes, sem modificar sua posição.
+        timeline.addEventListener("click", evento => {
+            if (!(evento.target instanceof Element)) return;
+
+            const clipe = evento.target.closest(".ae-clip");
+
+            if (!clipe || !timeline.contains(clipe)) return;
+
+            timeline.querySelectorAll(
+                ".aether-clipe-selecionado-v61"
+            ).forEach(elemento => {
+                elemento.classList.remove(
+                    "aether-clipe-selecionado-v61"
+                );
+            });
+
+            clipe.classList.add(
+                "aether-clipe-selecionado-v61"
+            );
+        });
+
+        // Acesso rapido ao corte que ja existe.
+        const grupo = ferramentas.querySelector(
+            ".ae-ref-tools-group"
+        );
+
+        if (
+            grupo &&
+            !document.getElementById("aether-dividir-v61")
+        ) {
+            const dividir = document.createElement("button");
+            dividir.type = "button";
+            dividir.id = "aether-dividir-v61";
+            dividir.textContent = "✂ Dividir";
+            dividir.title = "Dividir no tempo atual";
+
+            dividir.addEventListener("click", () => {
+                const video = document.getElementById("video");
+
+                if (
+                    !video ||
+                    !Number.isFinite(video.duration) ||
+                    video.duration <= 0
+                ) {
+                    alert("Importe um vídeo primeiro.");
+                    return;
+                }
+
+                const botoes = [
+                    ...editor.querySelectorAll("button")
+                ];
+
+                const original = botoes.find(botao => {
+                    if (
+                        botao === dividir ||
+                        ferramentas.contains(botao)
+                    ) return false;
+
+                    const nome = normalizar(
+                        (botao.dataset.act || "") + " " +
+                        (botao.id || "") + " " +
+                        (botao.title || "") + " " +
+                        (botao.getAttribute("aria-label") || "") +
+                        " " + (botao.textContent || "")
+                    );
+
+                    return (
+                        botao.dataset.act === "split" ||
+                        /dividir|cortar|split/.test(nome) ||
+                        (botao.textContent || "").trim() === "✂"
+                    );
+                });
+
+                if (original) {
+                    original.click();
+                } else {
+                    alert(
+                        "Ferramenta de corte original não localizada. " +
+                        "Use a tesoura na barra lateral."
+                    );
+                }
+            });
+
+            grupo.appendChild(dividir);
+        }
+
+        const cortadorIA =
+            document.getElementById("ae-ref-ai");
+
+        if (cortadorIA) {
+            cortadorIA.title =
+                "Cortador IA: em desenvolvimento";
+        }
+
+        // Remover somente o aviso flutuante duplicado.
+        function ocultarAviso() {
+            const header = document.querySelector("header");
+
+            document.querySelectorAll(
+                "button, a, div, span"
+            ).forEach(elemento => {
+                if (
+                    header && header.contains(elemento)
+                ) return;
+
+                if (
+                    normalizar(elemento.textContent) !==
+                    "atualizacoes automaticas"
+                ) return;
+
+                const rect =
+                    elemento.getBoundingClientRect();
+
+                if (
+                    rect.width > 0 &&
+                    rect.width < 450 &&
+                    rect.height > 0 &&
+                    rect.height < 110
+                ) {
+                    elemento.style.setProperty(
+                        "display", "none", "important"
+                    );
+                }
+            });
+        }
+
+        ocultarAviso();
+
+        let agendado = false;
+
+        new MutationObserver(() => {
+            if (agendado) return;
+
+            agendado = true;
+
+            requestAnimationFrame(() => {
+                agendado = false;
+                ocultarAviso();
+            });
+        }).observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        console.log("AETHER MODO CORTE V6.1 ATIVO");
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded", iniciar,
+            { once: true }
+        );
+    } else {
+        iniciar();
+    }
 })();
 </script>
 <script>(function(){let v=null;async function check(){try{let r=await fetch("./build.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;let d=await r.json();if(v===null)v=d.revisao;else if(v!==d.revisao)location.replace("./index.html?v="+encodeURIComponent(d.revisao));}catch(e){console.warn(e);}}check();setInterval(check,30000);})();</script>
