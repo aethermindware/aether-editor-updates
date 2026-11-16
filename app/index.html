@@ -1350,8 +1350,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116144915658"></script><script src="aether_auto_update_v1.js?v=20261116144915658"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116144915658"></script>
+<script src="aether_update_v2.js?v=20261116150742690"></script><script src="aether_auto_update_v1.js?v=20261116150742690"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116150742690"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -4751,6 +4751,406 @@ header .aether-km-exportar-v1 {
         atualizar();
 
         console.log("AETHER TIMELINE V4.1 ATIVADA");
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded", iniciar, { once: true }
+        );
+    } else {
+        iniciar();
+    }
+})();
+</script>
+<!-- AETHER_TIMELINE_REF_V5 -->
+<style id="aether-timeline-ref-v5">
+
+/* Ferramentas independentes, acima da timeline */
+#editor #ae-ref-tools-v1 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 8px 0;
+    padding: 12px;
+    border: 1px solid #303a4e;
+    border-radius: 12px;
+    background: #151923;
+    color: #f3f5fa;
+}
+
+#editor .ae-ref-tools-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+#editor .ae-ref-tools-group button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-width: 85px;
+    min-height: 72px;
+    padding: 9px;
+    background: #272c36;
+    border: 1px solid #394150;
+    border-radius: 11px;
+    color: #fff;
+    font: 500 12px system-ui, sans-serif;
+    cursor: pointer;
+}
+
+#editor .ae-ref-tools-group button:active {
+    background: #35537e;
+}
+
+#editor .ae-ref-tools-group button:focus-visible {
+    outline: 2px solid #86baff;
+}
+
+#editor .ae-ref-ico {
+    font-size: 25px;
+    line-height: 1;
+}
+
+#editor #ae-ref-ai small {
+    font-size: 9px;
+    color: #ffc779;
+}
+
+#editor #ae-ref-mute[aria-pressed="true"] {
+    border-color: #579eff;
+    background: #263e61;
+}
+
+#editor .ae-ref-inserts button {
+    min-height: 42px;
+    min-width: 100px;
+    background: #233349;
+    border-color: #40577a;
+}
+
+#editor #ae-ref-status {
+    flex-basis: 100%;
+    min-height: 0;
+    font-size: 11px;
+    color: #a9caee;
+}
+
+#editor #ae-ref-status:empty {
+    display: none;
+}
+
+/* Apenas aparencia das faixas existentes */
+#editor #timelineScroll .ae-track {
+    background: #20242d;
+    border-bottom: 1px solid #373f4c;
+    border-radius: 5px;
+}
+
+#editor #timelineScroll .ae-ref-track-audio {
+    background: #242830;
+}
+
+#editor #timelineScroll .ae-ref-track-text {
+    background: #23272e;
+}
+
+/* Clipes: visual mais proximo da referencia */
+#editor #timelineScroll .ae-clip {
+    border-radius: 6px;
+    border: 1px solid #627ea7;
+    background-color: #355783;
+}
+
+#editor #timelineScroll .ae-clip.selected {
+    outline: 2px solid #77b0ff;
+    outline-offset: -2px;
+}
+
+/* Adaptacao para celulares */
+@media (max-width: 700px) {
+    #editor #ae-ref-tools-v1 {
+        padding: 7px;
+        gap: 7px;
+    }
+
+    #editor .ae-ref-tools-group {
+        gap: 5px;
+    }
+
+    #editor .ae-ref-tools-group button {
+        min-width: 65px;
+        min-height: 60px;
+        padding: 6px;
+        font-size: 10px;
+    }
+
+    #editor .ae-ref-inserts button {
+        min-width: 80px;
+        min-height: 38px;
+    }
+
+    #editor .ae-ref-ico {
+        font-size: 21px;
+    }
+}
+</style>
+
+<script id="aether-timeline-ref-v5-script">
+(() => {
+    "use strict";
+
+    if (window.AETHER_TIMELINE_REF_V5) return;
+
+    function iniciar() {
+        const editor = document.getElementById("editor");
+        const timeline =
+            document.getElementById("timelineScroll");
+        const video = document.getElementById("video");
+
+        if (!editor || !timeline || !video) return;
+
+        if (document.getElementById("ae-ref-tools-v1")) {
+            return;
+        }
+
+        window.AETHER_TIMELINE_REF_V5 = true;
+
+        const barra = document.createElement("section");
+        barra.id = "ae-ref-tools-v1";
+        barra.setAttribute(
+            "aria-label", "Ferramentas de edição"
+        );
+
+        barra.innerHTML = `
+            <div class="ae-ref-tools-group">
+                <button id="ae-ref-mute" type="button"
+                    aria-pressed="false">
+                    <span class="ae-ref-ico">♬</span>
+                    <span>Silenciar áudio</span>
+                </button>
+
+                <button id="ae-ref-ai" type="button">
+                    <span class="ae-ref-ico">✂</span>
+                    <span>Cortador IA</span>
+                    <small>Em desenvolvimento</small>
+                </button>
+
+                <button id="ae-ref-cover" type="button">
+                    <span class="ae-ref-ico">▧</span>
+                    <span>Capa</span>
+                </button>
+            </div>
+
+            <div class="ae-ref-tools-group ae-ref-inserts">
+                <button id="ae-ref-add-audio" type="button">
+                    ＋ Áudio
+                </button>
+
+                <button id="ae-ref-add-text" type="button">
+                    ＋ Texto
+                </button>
+            </div>
+
+            <span id="ae-ref-status"
+                role="status" aria-live="polite"></span>
+        `;
+
+        // Adiciona ferramentas antes da timeline.
+        // Nao move a agulha ou modifica a regua.
+        timeline.parentNode.insertBefore(barra, timeline);
+
+        const $ = id => document.getElementById(id);
+
+        const avisar = texto => {
+            $("ae-ref-status").textContent = texto;
+        };
+
+        function atualizarSom() {
+            const mudo = video.muted || video.volume === 0;
+
+            $("ae-ref-mute").setAttribute(
+                "aria-pressed", String(mudo)
+            );
+
+            $("ae-ref-mute").querySelector(
+                ".ae-ref-ico"
+            ).textContent = mudo ? "♪" : "♬";
+
+            $("ae-ref-mute").querySelectorAll(
+                "span"
+            )[1].textContent =
+                mudo ? "Ativar áudio" : "Silenciar áudio";
+        }
+
+        $("ae-ref-mute").addEventListener("click", () => {
+            video.muted = !video.muted;
+            atualizarSom();
+
+            avisar(
+                video.muted
+                    ? "Áudio da prévia silenciado."
+                    : "Áudio da prévia ativado."
+            );
+        });
+
+        video.addEventListener(
+            "volumechange", atualizarSom
+        );
+
+        atualizarSom();
+
+        $("ae-ref-ai").addEventListener("click", () => {
+            avisar(
+                "Cortador IA ainda nao implementado."
+            );
+        });
+
+        // Capturar capa PNG do quadro atual.
+        $("ae-ref-cover").addEventListener("click", () => {
+            if (!video.videoWidth || !video.videoHeight) {
+                avisar("Importe um vídeo primeiro.");
+                return;
+            }
+
+            try {
+                const canvas =
+                    document.createElement("canvas");
+
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                canvas.getContext("2d").drawImage(
+                    video, 0, 0
+                );
+
+                canvas.toBlob(blob => {
+                    if (!blob) {
+                        avisar("Captura indisponível.");
+                        return;
+                    }
+
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+
+                    link.href = url;
+                    link.download = "aether-capa.png";
+
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+
+                    setTimeout(
+                        () => URL.revokeObjectURL(url),
+                        15000
+                    );
+
+                    avisar("Capa enviada para downloads.");
+                }, "image/png");
+
+            } catch (_) {
+                avisar("Captura indisponível no dispositivo.");
+            }
+        });
+
+        // Reutilizar importador de audio existente.
+        $("ae-ref-add-audio").addEventListener(
+            "click", () => {
+                const entrada = document.querySelector(
+                    '#pickAudio, #arquivoAudio, ' +
+                    'input[type="file"][accept*="audio"]'
+                );
+
+                if (entrada) {
+                    entrada.click();
+                    return;
+                }
+
+                const botao = editor.querySelector(
+                    '[data-act="audio"]'
+                );
+
+                if (botao) botao.click();
+                else avisar("Importador de áudio não encontrado.");
+            }
+        );
+
+        // Reutilizar ferramenta de texto existente.
+        $("ae-ref-add-text").addEventListener(
+            "click", () => {
+                const direto = editor.querySelector(
+                    '[data-act="text"]'
+                );
+
+                if (direto) {
+                    direto.click();
+                    return;
+                }
+
+                if (typeof window.action === "function") {
+                    window.action("text");
+                    return;
+                }
+
+                const camadas = editor.querySelector(
+                    '[data-act="layer"]'
+                );
+
+                if (camadas) {
+                    camadas.click();
+
+                    requestAnimationFrame(() => {
+                        const botao = [
+                            ...editor.querySelectorAll(
+                                "#toolPanel button"
+                            )
+                        ].find(b =>
+                            /adicionar texto/i.test(b.textContent)
+                        );
+
+                        if (botao) botao.click();
+                        else avisar("Ferramenta de texto indisponível.");
+                    });
+                } else {
+                    avisar("Ferramenta de texto indisponível.");
+                }
+            }
+        );
+
+        // Identificar trilhas sem alterar seu conteudo.
+        for (const faixa of timeline.querySelectorAll(
+            ".ae-track"
+        )) {
+            const rotulo = faixa.querySelector(
+                ".ae-track-label, .track-label"
+            );
+
+            const nome = (rotulo?.textContent || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase();
+
+            if (nome.includes("video")) {
+                faixa.classList.add("ae-ref-track-video");
+            }
+
+            if (nome.includes("audio")) {
+                faixa.classList.add("ae-ref-track-audio");
+            }
+
+            if (nome.includes("texto")) {
+                faixa.classList.add("ae-ref-track-text");
+            }
+        }
+
+        console.log(
+            "AETHER TIMELINE V5 ATIVADA - AGULHA INTOCADA"
+        );
     }
 
     if (document.readyState === "loading") {
