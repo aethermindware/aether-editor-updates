@@ -1315,8 +1315,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116010231015"></script><script src="aether_auto_update_v1.js?v=20261116010231015"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116010231015"></script>
+<script src="aether_update_v2.js?v=20261116012002190"></script><script src="aether_auto_update_v1.js?v=20261116012002190"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116012002190"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -3757,6 +3757,180 @@ header .aether-km-exportar-v1 {
 }
 
 </style>
+<!-- AETHER_SETORES_ILUMINADOS_V3 -->
+<style id="aether-setores-v3">
+
+/* Circulo preparado para a iluminacao */
+#editor .aether-pro-menu-v2 {
+    isolation: isolate !important;
+}
+
+/* Camada de iluminacao */
+#editor .aether-pro-menu-v2::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    background: rgba(255,255,255,.19) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+    transition: opacity .18s ease !important;
+}
+
+/* Midia - parte superior */
+#editor .aether-pro-menu-v2
+[data-aether-setor-v3="media"] {
+    color: white;
+}
+
+#editor .aether-pro-menu-v2[data-aether-setor-v3="media"]::after {
+    clip-path: polygon(50% 50%, 0 0, 100% 0);
+    opacity: 1 !important;
+}
+
+/* Camada - lado esquerdo */
+#editor .aether-pro-menu-v2[data-aether-setor-v3="layer"]::after {
+    clip-path: polygon(50% 50%, 0 0, 0 100%);
+    opacity: 1 !important;
+}
+
+/* Audio - lado direito */
+#editor .aether-pro-menu-v2[data-aether-setor-v3="audio"]::after {
+    clip-path: polygon(50% 50%, 100% 0, 100% 100%);
+    opacity: 1 !important;
+}
+
+/* REC - parte inferior */
+#editor .aether-pro-menu-v2[data-aether-setor-v3="voice"]::after {
+    clip-path: polygon(50% 50%, 0 100%, 100% 100%);
+    opacity: 1 !important;
+}
+
+/* I.A permanece azul e ganha brilho */
+#editor .aether-pro-menu-v2[data-aether-setor-v3="ai"]
+> button[data-aether-slot="ai"] {
+    filter: brightness(1.18) !important;
+    box-shadow: 0 0 23px rgba(52,145,255,.65) !important;
+}
+
+/* Botoes acima do setor iluminado */
+#editor .aether-pro-menu-v2 > button[data-aether-slot] {
+    z-index: 2 !important;
+}
+
+/* I.A acima dos demais */
+#editor .aether-pro-menu-v2 > button[data-aether-slot="ai"] {
+    z-index: 3 !important;
+}
+
+/* Desativar o efeito antigo em formato de oval */
+#editor .aether-pro-menu-v2 > button[data-aether-slot]::before {
+    content: none !important;
+}
+
+/* Evitar que a iluminacao antiga desloque os botoes */
+#editor .aether-pro-menu-v2 > button.aether-ativo-v1 {
+    transform: translate(-50%, -50%) !important;
+}
+
+/* Quando abrir ferramentas do video, nao mostrar a fatia */
+#editor .aether-pro-menu-v2.ae-video-ativo-v2::after,
+#editor .aether-pro-menu-v2.ae-video-ativo-v1::after {
+    display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #editor .aether-pro-menu-v2::after {
+        transition: none !important;
+    }
+}
+
+</style>
+
+<script id="aether-setores-v3-script">
+(() => {
+    "use strict";
+
+    function iniciar() {
+        const menu = document.querySelector(
+            "#editor .aether-pro-menu-v2"
+        );
+
+        if (!menu) {
+            console.warn("Aether: menu circular nao encontrado.");
+            return;
+        }
+
+        if (menu.dataset.aetherSetoresV3 === "ativo") {
+            return;
+        }
+
+        menu.dataset.aetherSetoresV3 = "ativo";
+
+        const setores = new Set([
+            "media",
+            "layer",
+            "audio",
+            "voice",
+            "ai"
+        ]);
+
+        menu.addEventListener("click", evento => {
+            if (!(evento.target instanceof Element)) return;
+
+            const botao = evento.target.closest(
+                "button[data-aether-slot]"
+            );
+
+            if (!botao || botao.parentElement !== menu) {
+                return;
+            }
+
+            const setor = botao.dataset.aetherSlot;
+
+            if (!setores.has(setor)) return;
+
+            menu.dataset.aetherSetorV3 = setor;
+
+            // Desativa o destaque antigo, caso esteja instalado.
+            menu.removeAttribute("data-aether-destaque-v2");
+
+            menu.querySelectorAll(
+                ":scope > button[data-aether-slot]"
+            ).forEach(b => {
+                const ativo = b === botao;
+
+                b.classList.toggle(
+                    "aether-ativo-v1",
+                    ativo
+                );
+
+                b.setAttribute(
+                    "aria-pressed",
+                    String(ativo)
+                );
+            });
+        });
+
+        console.log(
+            "AETHER: SETORES ILUMINADOS V3 ATIVOS"
+        );
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            iniciar,
+            { once: true }
+        );
+    } else {
+        iniciar();
+    }
+})();
+</script>
 <script>(function(){let v=null;async function check(){try{let r=await fetch("./build.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;let d=await r.json();if(v===null)v=d.revisao;else if(v!==d.revisao)location.replace("./index.html?v="+encodeURIComponent(d.revisao));}catch(e){console.warn(e);}}check();setInterval(check,30000);})();</script>
 </body>
 </html>
