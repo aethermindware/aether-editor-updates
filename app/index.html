@@ -1237,8 +1237,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116000215701"></script><script src="aether_auto_update_v1.js?v=20261116000215701"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116000215701"></script>
+<script src="aether_update_v2.js?v=20261116000612058"></script><script src="aether_auto_update_v1.js?v=20261116000612058"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116000612058"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -2729,6 +2729,157 @@ mensagem("Timeline V4 pronta para testes.");
     } else {
         removerBarra();
     }
+})();
+</script>
+<!-- AETHER_TRILHA_LIMPA_V1 -->
+<style id="aether-trilha-limpa-v1">
+    /* remove clip falso vazio */
+    #editor .ae-track .ae-empty-clip,
+    #editor .ae-track .clip-vazio,
+    #editor .ae-track .sem-video,
+    #editor .ae-track [data-empty="true"] {
+        display: none !important;
+    }
+
+    /* caso o botao/clipe falso esteja usando o texto */
+    #editor .ae-track button,
+    #editor .ae-track .ae-clip,
+    #editor .ae-track .clip {
+        transition: all .2s ease;
+    }
+
+    /* estilo da mensagem discreta */
+    #editor .ae-video-empty-hint {
+        position: absolute;
+        left: 120px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #8ea6c9;
+        font-size: 12px;
+        pointer-events: none;
+        opacity: .9;
+        white-space: nowrap;
+    }
+
+    /* garante que a trilha permita hint interna */
+    #editor .ae-track,
+    #editor #faixa,
+    #editor .timeline-track,
+    #editor .track-video {
+        position: relative !important;
+    }
+</style>
+
+<script id="aether-trilha-limpa-v1-script">
+(() => {
+    "use strict";
+
+    if (window.AETHER_TRILHA_LIMPA_V1) return;
+    window.AETHER_TRILHA_LIMPA_V1 = true;
+
+    function textoTemSemVideo(el) {
+        if (!el) return false;
+        const t = (el.textContent || "").trim().toLowerCase();
+        return t.includes("nenhum vídeo importado") ||
+               t.includes("nenhum video importado") ||
+               t === "sem vídeo" ||
+               t === "sem video";
+    }
+
+    function pegarFaixaVideo() {
+        const candidatos = [
+            "#faixa",
+            ".track-video",
+            ".timeline-track",
+            ".ae-track"
+        ];
+
+        for (const sel of candidatos) {
+            const lista = document.querySelectorAll(sel);
+
+            for (const item of lista) {
+                const texto = (item.textContent || "").toLowerCase();
+                if (texto.includes("vídeo") || texto.includes("video")) {
+                    return item;
+                }
+            }
+        }
+
+        return document.querySelector("#faixa") ||
+               document.querySelector(".ae-track") ||
+               null;
+    }
+
+    function videoTemMidia() {
+        const v = document.getElementById("video");
+        if (!v) return false;
+
+        return !!(v.currentSrc || v.getAttribute("src"));
+    }
+
+    function limparClipesFalsos(area) {
+        if (!area) return;
+
+        const itens = area.querySelectorAll("button, .ae-clip, .clip, div, span");
+
+        itens.forEach(el => {
+            if (textoTemSemVideo(el)) {
+                el.style.setProperty("display", "none", "important");
+                el.setAttribute("data-empty", "true");
+            }
+        });
+    }
+
+    function garantirHint(area) {
+        if (!area) return;
+
+        let hint = area.querySelector(".ae-video-empty-hint");
+
+        if (!hint) {
+            hint = document.createElement("div");
+            hint.className = "ae-video-empty-hint";
+            hint.textContent = "Importe um vídeo para começar";
+            area.appendChild(hint);
+        }
+
+        hint.style.display = videoTemMidia() ? "none" : "block";
+    }
+
+    function atualizar() {
+        const faixa = pegarFaixaVideo();
+        if (!faixa) return;
+
+        limparClipesFalsos(faixa);
+        garantirHint(faixa);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", atualizar, { once: true });
+    } else {
+        atualizar();
+    }
+
+    const video = document.getElementById("video");
+    if (video) {
+        video.addEventListener("loadedmetadata", atualizar);
+        video.addEventListener("emptied", atualizar);
+    }
+
+    document.addEventListener("change", function(e) {
+        const alvo = e.target;
+        if (alvo && alvo.id === "arquivo") {
+            setTimeout(atualizar, 200);
+            setTimeout(atualizar, 800);
+        }
+    });
+
+    const observer = new MutationObserver(() => atualizar());
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    console.log("AETHER TRILHA LIMPA V1 ATIVADA");
 })();
 </script>
 <script>(function(){let v=null;async function check(){try{let r=await fetch("./build.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;let d=await r.json();if(v===null)v=d.revisao;else if(v!==d.revisao)location.replace("./index.html?v="+encodeURIComponent(d.revisao));}catch(e){console.warn(e);}}check();setInterval(check,30000);})();</script>
