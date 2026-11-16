@@ -1237,8 +1237,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116002754157"></script><script src="aether_auto_update_v1.js?v=20261116002754157"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116002754157"></script>
+<script src="aether_update_v2.js?v=20261116004314857"></script><script src="aether_auto_update_v1.js?v=20261116004314857"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116004314857"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -3048,6 +3048,514 @@ mensagem("Timeline V4 pronta para testes.");
         console.log(
             "AETHER: EXPORTAR NO CABECALHO ATIVADO"
         );
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded", iniciar, { once: true }
+        );
+    } else {
+        iniciar();
+    }
+})();
+</script>
+<!-- AETHER_MENU_KM_V1 -->
+<style id="aether-km-estilo-v1">
+/* AETHER_MENU_KM_V1 */
+
+#editor .aether-km-shell-v1 {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    justify-self: center;
+    align-self: center;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100%;
+    max-width: 255px;
+    min-width: 0;
+}
+
+/* Circulo original redesenhado */
+#editor .aether-km-shell-v1 >
+.aether-pro-menu-v2:not(.ae-video-ativo-v2):not(.ae-video-ativo-v1) {
+    position: relative !important;
+    display: block !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+    width: min(100%, 245px) !important;
+    height: auto !important;
+    min-width: 0 !important;
+    max-width: 245px !important;
+    min-height: 0 !important;
+    aspect-ratio: 1 / 1 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    border-radius: 50% !important;
+    border: 1px solid #324b6e !important;
+    overflow: hidden !important;
+    background:
+        radial-gradient(
+            circle,
+            #182b46 0%,
+            #101d30 58%,
+            #0b1525 100%
+        ) !important;
+    box-shadow:
+        0 8px 24px #0005,
+        inset 0 0 18px #0003 !important;
+}
+
+/* Botoes do circulo */
+#editor .aether-km-shell-v1 >
+.aether-pro-menu-v2:not(.ae-video-ativo-v2):not(.ae-video-ativo-v1)
+> button[data-aether-slot] {
+    position: absolute !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    transform: translate(-50%, -50%) !important;
+    width: min(26%, 60px) !important;
+    height: 55px !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 3px !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    color: #f2f6ff !important;
+    text-align: center !important;
+    white-space: normal !important;
+    overflow-wrap: normal !important;
+    cursor: pointer !important;
+}
+
+#editor .aether-km-shell-v1
+.aether-pro-menu-v2 > button svg {
+    display: block;
+    flex: 0 0 auto;
+    width: 23px;
+    height: 23px;
+}
+
+#editor .aether-km-shell-v1
+.aether-pro-menu-v2 > button .aether-km-label {
+    font: 600 10px system-ui, sans-serif;
+    white-space: nowrap;
+}
+
+/* Distribuicao precisa */
+#editor .aether-km-shell-v1
+.aether-pro-menu-v2 > [data-aether-slot="media"] {
+    left: 50% !important;
+    top: 20% !important;
+}
+
+#editor .aether-km-shell-v1
+.aether-pro-menu-v2 > [data-aether-slot="layer"] {
+    left: 19% !important;
+    top: 50% !important;
+}
+
+#editor .aether-km-shell-v1
+.aether-pro-menu-v2 > [data-aether-slot="audio"] {
+    left: 81% !important;
+    top: 50% !important;
+}
+
+#editor .aether-km-shell-v1
+.aether-pro-menu-v2 > [data-aether-slot="voice"] {
+    left: 50% !important;
+    top: 80% !important;
+}
+
+/* I.A central */
+#editor .aether-km-shell-v1 >
+.aether-pro-menu-v2:not(.ae-video-ativo-v2):not(.ae-video-ativo-v1)
+> [data-aether-slot="ai"] {
+    left: 50% !important;
+    top: 50% !important;
+    width: min(30%, 78px) !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    border-radius: 50% !important;
+    background:
+        linear-gradient(135deg, #318bff, #1454cc)
+        !important;
+    box-shadow: 0 4px 17px #2679ff66 !important;
+    z-index: 3 !important;
+}
+
+#editor .aether-km-shell-v1
+.aether-pro-menu-v2
+> [data-aether-slot="ai"] .aether-km-label {
+    font-size: 14px !important;
+    font-weight: 800 !important;
+}
+
+#editor .aether-km-shell-v1
+.aether-pro-menu-v2
+> [data-aether-slot="ai"] svg {
+    width: 25px;
+    height: 25px;
+}
+
+/* Dois botoes fora do circulo */
+#editor .aether-km-row-v1 {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    padding: 0 11px !important;
+    margin: 0 !important;
+    gap: 8px !important;
+}
+
+#editor .aether-km-row-v1 .aether-km-botao-v1 {
+    position: static !important;
+    transform: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+    min-height: 52px !important;
+    border: 1px solid #475163 !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #303743 !important;
+    color: white !important;
+    cursor: pointer !important;
+    touch-action: manipulation;
+}
+
+#editor .aether-km-row-v1 .aether-km-botao-v1 svg {
+    width: 26px !important;
+    height: 26px !important;
+    stroke: currentColor;
+    pointer-events: none;
+}
+
+#editor .aether-km-row-v1
+.aether-km-botao-v1 .aether-km-fill {
+    fill: currentColor;
+    stroke: none;
+}
+
+/* Botao de exportar */
+header .aether-km-exportar-v1 {
+    display: inline-flex !important;
+    position: static !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 35px !important;
+    padding: 7px 12px !important;
+    border-radius: 9px !important;
+    background: #2563eb !important;
+    color: white !important;
+    border: 1px solid #4489ff !important;
+    white-space: nowrap;
+}
+
+/* Celular horizontal */
+@media(max-width: 950px) and (orientation: landscape) {
+    #editor .aether-km-shell-v1 {
+        max-width: 210px;
+        gap: 5px !important;
+    }
+
+    #editor .aether-km-shell-v1
+    .aether-pro-menu-v2 {
+        max-width: 198px !important;
+    }
+
+    #editor .aether-km-row-v1
+    .aether-km-botao-v1 {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+}
+
+/* Celular vertical */
+@media(max-width: 900px) and (orientation: portrait) {
+    #editor .aether-km-shell-v1 {
+        grid-column: 1 !important;
+        grid-row: 3 !important;
+        max-width: 245px;
+        margin: 0 auto;
+    }
+}
+</style>
+<script id="aether-km-script-v1">
+(() => {
+    "use strict";
+
+    if (window.AETHER_MENU_KM_V1) return;
+
+    function iniciar() {
+        const editor = document.getElementById("editor");
+        const video = document.getElementById("video");
+        const menu = editor?.querySelector(
+            ".aether-pro-menu-v2"
+        );
+
+        if (!editor || !video || !menu) {
+            console.warn("Aether: menu circular ausente");
+            return;
+        }
+
+        window.AETHER_MENU_KM_V1 = true;
+
+        let caixa = menu.parentElement;
+
+        if (
+            !caixa.classList.contains("ae-menu-com-botoes-v1") &&
+            !caixa.classList.contains("aether-km-shell-v1")
+        ) {
+            caixa = document.createElement("div");
+            menu.parentNode.insertBefore(caixa, menu);
+            caixa.appendChild(menu);
+        }
+
+        caixa.classList.add("aether-km-shell-v1");
+
+        const icones = {
+            media: [
+                "Mídia",
+                '<path d="M3 7h7l2 2h9v10H3z"/><path d="M3 7V5h7l2 2"/>'
+            ],
+            layer: [
+                "Camada",
+                '<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 16 9 5 9-5"/>'
+            ],
+            ai: [
+                "I.A",
+                '<path d="m12 2 2 6 6 2-6 2-2 6-2-6-6-2 6-2 2-6Z"/>'
+            ],
+            audio: [
+                "Áudio",
+                '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>'
+            ],
+            voice: [
+                "REC",
+                '<rect x="9" y="2" width="6" height="13" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4m-5 0h10"/>'
+            ]
+        };
+
+        const normalizar = texto =>
+            String(texto || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase();
+
+        for (const botao of menu.querySelectorAll(
+            ":scope > button"
+        )) {
+            const nome = normalizar(
+                (botao.dataset.act || "") + " " +
+                (botao.textContent || "")
+            );
+
+            let tipo = botao.dataset.aetherSlot;
+
+            if (!icones[tipo]) {
+                if (/midia|media/.test(nome)) tipo = "media";
+                else if (/camada|layer/.test(nome)) tipo = "layer";
+                else if (/legenda|caption|i\.a|\bai\b/.test(nome))
+                    tipo = "ai";
+                else if (/audio/.test(nome)) tipo = "audio";
+                else if (/voz|rec|grav/.test(nome)) tipo = "voice";
+            }
+
+            if (!icones[tipo]) continue;
+
+            botao.dataset.aetherSlot = tipo;
+
+            const [rotulo, desenho] = icones[tipo];
+
+            // Troca somente o icone e texto.
+            // O evento original do botao e preservado.
+            botao.innerHTML =
+                '<svg aria-hidden="true" viewBox="0 0 24 24" ' +
+                'fill="none" stroke="currentColor" ' +
+                'stroke-width="1.8" stroke-linecap="round" ' +
+                'stroke-linejoin="round">' +
+                desenho + '</svg>' +
+                '<span class="aether-km-label">' +
+                rotulo + '</span>';
+
+            botao.setAttribute("aria-label", rotulo);
+        }
+
+        // Reutilizar os botoes inferiores, se ja existirem.
+        let linha = caixa.querySelector(
+            "#ae-menu-botoes-linha-v1, .aether-km-row-v1"
+        );
+
+        if (!linha) {
+            linha = document.createElement("div");
+            caixa.appendChild(linha);
+        }
+
+        linha.classList.add("aether-km-row-v1");
+
+        let loja = linha.querySelector(
+            "#ae-biblioteca-v1, #aether-km-biblioteca-v1"
+        );
+
+        if (!loja) {
+            loja = document.createElement("button");
+            loja.type = "button";
+            loja.id = "aether-km-biblioteca-v1";
+
+            loja.addEventListener("click", () => {
+                const arquivo =
+                    document.getElementById("arquivo") ||
+                    document.getElementById("pickVideo");
+
+                if (arquivo) arquivo.click();
+                else alert("Importador de mídia indisponível.");
+            });
+
+            linha.appendChild(loja);
+        }
+
+        loja.classList.add("aether-km-botao-v1");
+        loja.title = "Biblioteca de mídia";
+        loja.setAttribute("aria-label", loja.title);
+
+        loja.innerHTML = `
+            <svg viewBox="0 0 24 24" aria-hidden="true"
+                fill="none" stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M3 9h18l-2-5H5L3 9Z"/>
+                <path d="M4 12v8h16v-8"/>
+                <path d="M8 20v-6h8v6"/>
+                <path d="M3 9c0 4 5 4 5 0
+                         m0 0c0 4 4 4 4 0
+                         m0 0c0 4 4 4 4 0
+                         m0 0c0 4 5 4 5 0"/>
+            </svg>
+        `;
+
+        let play = linha.querySelector(
+            "#ae-play-inferior-v1, #aether-km-play-v1"
+        );
+
+        if (!play) {
+            play = document.createElement("button");
+            play.type = "button";
+            play.id = "aether-km-play-v1";
+
+            play.addEventListener("click", () => {
+                if (
+                    !video.currentSrc &&
+                    !video.getAttribute("src")
+                ) {
+                    alert("Importe um vídeo primeiro.");
+                    return;
+                }
+
+                if (video.paused || video.ended) {
+                    video.play().catch(() =>
+                        alert("Reprodução indisponível.")
+                    );
+                } else {
+                    video.pause();
+                }
+            });
+
+            linha.appendChild(play);
+
+            function atualizarIcone() {
+                const pausado = video.paused || video.ended;
+
+                play.innerHTML = pausado
+                    ? '<svg class="aether-km-fill" viewBox="0 0 24 24"><path d="m6 3 15 9-15 9Z"/></svg>'
+                    : '<svg class="aether-km-fill" viewBox="0 0 24 24"><rect x="5" y="3" width="5" height="18"/><rect x="14" y="3" width="5" height="18"/></svg>';
+
+                play.setAttribute(
+                    "aria-label",
+                    pausado ? "Reproduzir" : "Pausar"
+                );
+            }
+
+            ["play", "pause", "ended", "emptied"].forEach(
+                evento => video.addEventListener(
+                    evento, atualizarIcone
+                )
+            );
+
+            atualizarIcone();
+        }
+
+        play.classList.add("aether-km-botao-v1");
+
+        // Exportar ao lado de Atualizacoes.
+        // Reutiliza o botao existente, se houver.
+        const header = document.querySelector("header");
+
+        if (header) {
+            const controles = [
+                ...header.querySelectorAll("button, a")
+            ];
+
+            const atualizacoes = controles.find(el =>
+                normalizar(el.textContent).includes("atualizac")
+            );
+
+            let exportar = controles.find(el =>
+                normalizar(el.textContent).trim() === "exportar"
+            );
+
+            if (!exportar) {
+                exportar = document.createElement("button");
+                exportar.type = "button";
+                exportar.id = "aether-km-exportar-v1";
+                exportar.textContent = "Exportar";
+
+                exportar.addEventListener("click", () => {
+                    const antigo = editor.querySelector(
+                        '[data-act="export"], #exportar'
+                    );
+
+                    if (antigo) {
+                        antigo.click();
+                    } else {
+                        alert(
+                            "Exportação ainda não implementada."
+                        );
+                    }
+                });
+            }
+
+            exportar.classList.add(
+                "aether-km-exportar-v1"
+            );
+
+            if (atualizacoes) {
+                atualizacoes.parentNode.insertBefore(
+                    exportar, atualizacoes
+                );
+            } else if (!exportar.isConnected) {
+                header.appendChild(exportar);
+            }
+        }
+
+        console.log("AETHER MENU PROFISSIONAL V3 ATIVADO");
     }
 
     if (document.readyState === "loading") {
