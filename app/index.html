@@ -1313,8 +1313,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116005458535"></script><script src="aether_auto_update_v1.js?v=20261116005458535"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116005458535"></script>
+<script src="aether_update_v2.js?v=20261116010039736"></script><script src="aether_auto_update_v1.js?v=20261116010039736"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116010039736"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -3688,6 +3688,73 @@ header .aether-km-exportar-v1 {
     }
 })();
 </script>
+<!-- AETHER_TEMPORIZADOR_V33 -->
+<style id="aether-temporizador-v33">
+
+/* Reservar espaco para o temporizador */
+#editor .ae-timeline {
+    padding-top: 38px !important;
+}
+
+/* Preservar linha da agulha */
+#editor #playhead {
+    z-index: 65 !important;
+}
+
+/* Temporizador ligado a agulha */
+#editor #playhead .aether-etiqueta-v3 {
+    position: absolute !important;
+
+    top: 4px !important;
+    left: 50% !important;
+    bottom: auto !important;
+    right: auto !important;
+
+    transform: translateX(-50%) !important;
+
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+
+    padding: 4px 9px !important;
+    margin: 0 !important;
+
+    background: #e53d59 !important;
+    color: #ffffff !important;
+
+    border: 1px solid #ff718a !important;
+    border-radius: 7px !important;
+
+    box-shadow: 0 3px 10px #0006 !important;
+
+    font: 600 11px system-ui, sans-serif !important;
+    font-variant-numeric: tabular-nums !important;
+
+    white-space: nowrap !important;
+    width: max-content !important;
+    max-width: none !important;
+
+    pointer-events: none !important;
+    z-index: 70 !important;
+}
+
+/* Triangulo diretamente abaixo do temporizador */
+#editor #playhead::before {
+    top: 28px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+}
+
+/* Celular */
+@media (max-width: 600px) {
+    #editor #playhead .aether-etiqueta-v3 {
+        font-size: 10px !important;
+        padding: 4px 6px !important;
+    }
+}
+
+</style>
 <script>(function(){let v=null;async function check(){try{let r=await fetch("./build.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;let d=await r.json();if(v===null)v=d.revisao;else if(v!==d.revisao)location.replace("./index.html?v="+encodeURIComponent(d.revisao));}catch(e){console.warn(e);}}check();setInterval(check,30000);})();</script>
 </body>
 </html>
