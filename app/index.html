@@ -1315,8 +1315,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116022957929"></script><script src="aether_auto_update_v1.js?v=20261116022957929"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116022957929"></script>
+<script src="aether_update_v2.js?v=20261116024710144"></script><script src="aether_auto_update_v1.js?v=20261116024710144"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116024710144"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -4601,60 +4601,184 @@ header .aether-km-exportar-v1 {
 
 
 <!-- AETHER_MOLDURA_CORRIGIDA_V2 -->
-<style id="aether-moldura-corrigida-v2">
 
-/* Somente o quadro real recebe borda */
-#editor #preview {
-    position: relative !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-    background: #000 !important;
 
-    border: 2px solid #539aff !important;
-    border-radius: 10px !important;
 
-    box-shadow:
-        0 0 0 3px rgba(65,140,255,.10),
-        0 5px 18px rgba(0,0,0,.25) !important;
+<!-- AETHER_ANDROID_LAYOUT_FIX_V1 -->
+<style id="aether-android-layout-fix-v1">
+
+html {
+    overflow-x: hidden;
 }
 
-/* Remover etiquetas cortadas e bordas duplicadas */
+body {
+    overflow-x: hidden;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Nao mostrar uma segunda tela preta em volta do video */
+#editor .aether-pro-video-v2:not(#preview),
+#editor .aether-preview-container-android-v1 {
+    background: transparent !important;
+    background-image: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    min-width: 0 !important;
+}
+
+/* Somente a tela real recebe a moldura */
+#editor #preview {
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+    margin-inline: auto !important;
+    border: 2px solid #4895ff !important;
+    border-radius: 10px !important;
+    background: #000 !important;
+    box-shadow: 0 3px 15px #0005 !important;
+    overflow: hidden !important;
+}
+
 #editor #preview::before,
 #editor #preview::after {
     content: none !important;
     display: none !important;
 }
 
-/* A parte externa nao e uma segunda tela */
-#editor .aether-pro-video-v2:not(#preview),
-#editor .aether-layout-preview:not(#preview),
-#editor .aether-preview-externo-fix-v2 {
-    background: transparent !important;
-    background-image: none !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-}
-
-/* Manter video dentro da proporcao escolhida */
 #editor #preview #video {
-    width: 100% !important;
-    height: 100% !important;
     object-fit: contain !important;
     background: #000 !important;
 }
 
+/* Preservar as faixas e a rolagem da timeline */
+#editor #timelineScroll {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Evitar bordas brancas duplicadas nos clipes */
+#editor .ae-clip:focus:not(:focus-visible),
+#editor #faixa button:focus:not(:focus-visible) {
+    outline: none !important;
+}
+
+#editor .ae-clip:focus-visible,
+#editor #faixa button:focus-visible {
+    outline: 2px solid #74b5ff !important;
+    outline-offset: -2px !important;
+}
+
+#editor .ae-clip.selected {
+    outline: 2px solid #74b5ff !important;
+    outline-offset: -2px !important;
+    box-shadow: none !important;
+}
+
+/* Android horizontal */
+@media (pointer: coarse) and (orientation: landscape) {
+
+    #editor {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 4px !important;
+    }
+
+    #editor .aether-pro-stage-v2 {
+        display: grid !important;
+        grid-template-columns:
+            48px minmax(0, 1fr) minmax(185px, 215px)
+            !important;
+        gap: 6px !important;
+        align-items: center !important;
+        padding: 6px !important;
+        min-width: 0 !important;
+    }
+
+    #editor .aether-pro-video-v2 {
+        min-width: 0 !important;
+        min-height: 0 !important;
+    }
+
+    #editor .aether-km-shell-v1 {
+        width: 100% !important;
+        max-width: 210px !important;
+        gap: 5px !important;
+        align-self: center !important;
+    }
+
+    /* Menu menor para nao cortar no Android */
+    #editor .aether-km-shell-v1
+    .aether-pro-menu-v2:not(.ae-video-ativo-v2) {
+        width: min(100%, 200px) !important;
+        min-width: 0 !important;
+        max-width: 200px !important;
+        height: auto !important;
+        aspect-ratio: 1 / 1 !important;
+    }
+
+    /* Centro da IA ajustado ao menu */
+    #editor .aether-km-shell-v1
+    .aether-pro-menu-v2
+    > button[data-aether-slot="ai"] {
+        width: 72px !important;
+        height: 72px !important;
+        min-width: 72px !important;
+        min-height: 72px !important;
+        max-width: 72px !important;
+        max-height: 72px !important;
+    }
+
+    #editor .aether-km-row-v1
+    .aether-km-botao-v1 {
+        width: 42px !important;
+        height: 42px !important;
+        min-width: 42px !important;
+        min-height: 42px !important;
+    }
+
+    #editor #preview {
+        max-height: 48dvh !important;
+    }
+}
+
+/* Celular na vertical */
+@media (pointer: coarse) and (orientation: portrait) {
+
+    #editor .aether-pro-stage-v2 {
+        min-width: 0 !important;
+        gap: 7px !important;
+    }
+
+    #editor #preview {
+        max-height: 42dvh !important;
+    }
+}
 </style>
 
-<script id="aether-moldura-corrigida-v2-script">
+<script id="aether-android-layout-fix-v1-script">
 (() => {
     "use strict";
 
-    function iniciar() {
-        const preview = document.getElementById("preview");
-        const editor = document.getElementById("editor");
+    if (window.AETHER_ANDROID_LAYOUT_FIX_V1) return;
+    window.AETHER_ANDROID_LAYOUT_FIX_V1 = true;
 
-        if (!preview || !editor) return;
+    function normalizar(texto) {
+        return String(texto || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim()
+            .toLowerCase();
+    }
+
+    function ajustarPreview() {
+        const editor = document.getElementById("editor");
+        const preview = document.getElementById("preview");
+
+        if (!editor || !preview) return;
 
         const externo = preview.parentElement;
 
@@ -4662,19 +4786,84 @@ header .aether-km-exportar-v1 {
             externo &&
             externo !== editor &&
             !externo.querySelector(".aether-pro-menu-v2") &&
-            !externo.querySelector("#timelineScroll")
+            !externo.querySelector("#timelineScroll") &&
+            externo.querySelectorAll("video").length === 1
         ) {
             externo.classList.add(
-                "aether-preview-externo-fix-v2"
+                "aether-preview-container-android-v1"
             );
         }
+    }
 
-        console.log("AETHER: MOLDURA V2 CORRIGIDA");
+    function ocultarAvisoDuplicado() {
+        const cabecalho = document.querySelector("header");
+
+        if (!cabecalho) return;
+
+        const existeAtualizacoes = [
+            ...cabecalho.querySelectorAll("button, a")
+        ].some(el =>
+            normalizar(el.textContent)
+                .includes("atualizac")
+        );
+
+        if (!existeAtualizacoes) return;
+
+        // Esconde apenas o aviso flutuante duplicado.
+        document.querySelectorAll(
+            "button, a, [role='button']"
+        ).forEach(el => {
+            if (cabecalho.contains(el)) return;
+
+            if (
+                normalizar(el.textContent) ===
+                "atualizacoes automaticas"
+            ) {
+                el.style.setProperty(
+                    "display",
+                    "none",
+                    "important"
+                );
+            }
+        });
+    }
+
+    function aplicar() {
+        ajustarPreview();
+        ocultarAvisoDuplicado();
+    }
+
+    function iniciar() {
+        aplicar();
+
+        let agendado = false;
+
+        new MutationObserver(() => {
+            if (agendado) return;
+
+            agendado = true;
+
+            requestAnimationFrame(() => {
+                agendado = false;
+                aplicar();
+            });
+        }).observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        window.addEventListener("resize", aplicar);
+
+        console.log(
+            "AETHER ANDROID LAYOUT FIX V1 ATIVO"
+        );
     }
 
     if (document.readyState === "loading") {
         document.addEventListener(
-            "DOMContentLoaded", iniciar, {once:true}
+            "DOMContentLoaded",
+            iniciar,
+            { once: true }
         );
     } else {
         iniciar();
