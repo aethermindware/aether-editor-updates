@@ -433,6 +433,82 @@ body:has(#editor:not([hidden])) main {
     outline-offset: 2px !important;
 }
 </style>
+/* AETHER_BOTAO_ATIVO_V1 */
+
+.aether-pro-menu-v2 > button[data-aether-slot] {
+    position: absolute;
+    overflow: visible !important;
+    transition:
+        transform 0.18s ease,
+        filter 0.18s ease,
+        opacity 0.18s ease;
+}
+
+.aether-pro-menu-v2 > button[data-aether-slot]::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 92px;
+    height: 128px;
+    transform: translate(-50%, -50%);
+    border-radius: 999px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.18) 0%,
+            rgba(255,255,255,0.10) 45%,
+            rgba(255,255,255,0.03) 100%
+        );
+    opacity: 0;
+    pointer-events: none;
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
+    z-index: -1;
+    box-shadow: none;
+}
+
+/* Destaque do botao clicado */
+.aether-pro-menu-v2 > button[data-aether-slot].aether-ativo-v1::before {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.02);
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.06) inset,
+        0 8px 24px rgba(255,255,255,0.06);
+}
+
+.aether-pro-menu-v2 > button[data-aether-slot].aether-ativo-v1 {
+    filter: brightness(1.16);
+    transform: translate(-50%, -50%) scale(1.03);
+}
+
+/* Efeito especial no botao central I.A */
+.aether-pro-menu-v2 > button[data-aether-slot="ai"]::before {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,0.22) 0%,
+            rgba(255,255,255,0.12) 45%,
+            rgba(255,255,255,0.04) 100%
+        );
+}
+
+.aether-pro-menu-v2 > button[data-aether-slot="ai"].aether-ativo-v1 {
+    filter: brightness(1.12);
+    box-shadow:
+        0 0 0 2px rgba(255,255,255,0.10) inset,
+        0 0 24px rgba(67,145,255,0.28);
+}
+
+/* Hover leve tambem */
+.aether-pro-menu-v2 > button[data-aether-slot]:hover::before {
+    opacity: 0.35;
+}
 </head>
 <body>
 <header>
@@ -1237,8 +1313,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116004314857"></script><script src="aether_auto_update_v1.js?v=20261116004314857"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116004314857"></script>
+<script src="aether_update_v2.js?v=20261116005458535"></script><script src="aether_auto_update_v1.js?v=20261116005458535"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116005458535"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -3564,6 +3640,51 @@ header .aether-km-exportar-v1 {
         );
     } else {
         iniciar();
+    }
+})();
+</script>
+<script>
+/* AETHER_BOTAO_ATIVO_SCRIPT_V1 */
+(function () {
+    function iniciarAetherAtivo() {
+        const menu = document.querySelector(".aether-pro-menu-v2");
+        if (!menu) return;
+
+        const botoes = Array.from(
+            menu.querySelectorAll('button[data-aether-slot]')
+        );
+
+        if (!botoes.length) return;
+
+        function ativar(botao) {
+            botoes.forEach(b => {
+                b.classList.remove("aether-ativo-v1");
+                b.setAttribute("aria-pressed", "false");
+            });
+
+            botao.classList.add("aether-ativo-v1");
+            botao.setAttribute("aria-pressed", "true");
+        }
+
+        botoes.forEach(botao => {
+            botao.addEventListener("click", function () {
+                ativar(botao);
+            });
+        });
+
+        const inicial =
+            botoes.find(b => b.dataset.aetherSlot === "media") ||
+            botoes[0];
+
+        if (inicial) {
+            ativar(inicial);
+        }
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", iniciarAetherAtivo);
+    } else {
+        iniciarAetherAtivo();
     }
 })();
 </script>
