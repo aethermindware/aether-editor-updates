@@ -1237,8 +1237,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116001404751"></script><script src="aether_auto_update_v1.js?v=20261116001404751"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116001404751"></script>
+<script src="aether_update_v2.js?v=20261116002754157"></script><script src="aether_auto_update_v1.js?v=20261116002754157"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116002754157"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -2917,6 +2917,146 @@ mensagem("Timeline V4 pronta para testes.");
     obs.observe(document.body, { childList: true, subtree: true });
 
     console.log("AETHER AGULHA V3.2 ATIVADA");
+})();
+</script>
+<!-- AETHER_EXPORTAR_HEADER_V1 -->
+<style id="aether-exportar-header-v1">
+.aether-header-acoes-v1 {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+    min-width: 0;
+}
+
+#aether-exportar-top-v1 {
+    display: inline-flex !important;
+    position: static !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 7px 13px;
+    background: #2563eb;
+    border: 1px solid #4489ff;
+    border-radius: 9px;
+    color: #fff;
+    font: 600 13px system-ui, sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+#aether-exportar-top-v1:hover {
+    background: #397bf4;
+}
+
+@media (max-width: 600px) {
+    .aether-header-acoes-v1 {
+        gap: 5px !important;
+    }
+
+    #aether-exportar-top-v1 {
+        min-height: 32px;
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+}
+</style>
+
+<script id="aether-exportar-header-v1-script">
+(() => {
+    "use strict";
+
+    function normalizar(s) {
+        return String(s || "")
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
+    }
+
+    function iniciar() {
+        if (document.getElementById(
+            "aether-exportar-top-v1"
+        )) return;
+
+        const header = document.querySelector("header");
+        if (!header) return;
+
+        const atualizacoes = [
+            ...header.querySelectorAll(
+                "button, a, [role='button']"
+            )
+        ].find(el =>
+            normalizar(el.textContent)
+                .includes("atualizac")
+        );
+
+        if (!atualizacoes) {
+            console.warn(
+                "Aether: botao Atualizacoes nao localizado."
+            );
+            return;
+        }
+
+        const botao = document.createElement("button");
+        botao.id = "aether-exportar-top-v1";
+        botao.type = "button";
+        botao.textContent = "Exportar";
+        botao.title = "Exportar projeto";
+
+        botao.addEventListener("click", () => {
+            const candidatos = [
+                ...document.querySelectorAll(
+                    "#editor .controls button, " +
+                    "#editor .aether-pro-transport-v2 button, " +
+                    "#editor [data-act='export'], " +
+                    "#editorPage [data-act='export']"
+                )
+            ];
+
+            const original = candidatos.find(el =>
+                el !== botao &&
+                !el.closest("header") &&
+                (
+                    normalizar(el.textContent)
+                        .includes("exportar") ||
+                    el.dataset.act === "export"
+                )
+            );
+
+            if (!original) {
+                alert(
+                    "Comando de exportacao nao encontrado."
+                );
+                return;
+            }
+
+            original.click();
+        });
+
+        // Colocar Exportar e Atualizacoes lado a lado,
+        // sem recriar o botao Atualizacoes.
+        const grupo = document.createElement("div");
+        grupo.className = "aether-header-acoes-v1";
+
+        atualizacoes.parentNode.insertBefore(
+            grupo, atualizacoes
+        );
+
+        grupo.appendChild(botao);
+        grupo.appendChild(atualizacoes);
+
+        console.log(
+            "AETHER: EXPORTAR NO CABECALHO ATIVADO"
+        );
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded", iniciar, { once: true }
+        );
+    } else {
+        iniciar();
+    }
 })();
 </script>
 <script>(function(){let v=null;async function check(){try{let r=await fetch("./build.json?t="+Date.now(),{cache:"no-store"});if(!r.ok)return;let d=await r.json();if(v===null)v=d.revisao;else if(v!==d.revisao)location.replace("./index.html?v="+encodeURIComponent(d.revisao));}catch(e){console.warn(e);}}check();setInterval(check,30000);})();</script>
