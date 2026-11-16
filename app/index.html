@@ -1350,8 +1350,8 @@ window.addEventListener("pagehide", () => {
 mensagem("Timeline V4 pronta para testes.");
 })();
 </script>
-<script src="aether_update_v2.js?v=20261116200446643"></script><script src="aether_auto_update_v1.js?v=20261116200446643"></script>
-<script src="aether_excluir_projeto_v1.js?v=20261116200446643"></script>
+<script src="aether_update_v2.js?v=20261116203417796"></script><script src="aether_auto_update_v1.js?v=20261116203417796"></script>
+<script src="aether_excluir_projeto_v1.js?v=20261116203417796"></script>
 <script id="aether-agulha-v3" src="./aether_agulha_v3.js?v=31"></script>
 <script id="aether-ocultar-debug-v1" src="./aether_ocultar_debug_v1.js?v=1"></script>
 <script id="aether-ferramentas-v1" src="./aether_ferramentas_v1.js?v=1"></script>
@@ -3583,9 +3583,25 @@ header .aether-km-exportar-v1 {
                 }
 
                 if (video.paused || video.ended) {
-                    video.play().catch(() =>
-                        alert("Reprodução indisponível.")
-                    );
+                    video.play().catch(erro => {
+    // AETHER_DIAGNOSTICO_PLAY_V11
+    const nome = erro?.name || "Erro desconhecido";
+    const detalhe = erro?.message || "";
+
+    console.error("AETHER PLAY:", nome, detalhe);
+
+    if (nome === "AbortError") {
+        console.warn(
+            "Reproducao interrompida por outra operacao."
+        );
+        return;
+    }
+
+    alert(
+        "Erro ao reproduzir video:\n" +
+        nome + "\n" + detalhe
+    );
+});
                 } else {
                     video.pause();
                 }
